@@ -1,0 +1,12 @@
+<resources>
+    <!-- Titolo risorse menu-->
+    <string name="app_name">Ortodox</string>
+    <string name="title_acasa">Acasa</string>
+    <string name="title_personal">Personal</string>
+    <string name="title_biblioteca">Biblioteca</string>
+    <string name="title_activity_personal">Personal</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_biblioteca">Biblioteca</string>
+</resources>
