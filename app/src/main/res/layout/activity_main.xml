@@ -9,8 +9,8 @@
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/listview"
-        android:layout_width="0dp"
-        android:layout_height="373dp"
+        android:layout_width="375dp"
+        android:layout_height="410dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -19,50 +19,10 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnplay"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.275"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton4"
-        android:layout_width="42dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="14dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginRight="108dp"
-        android:layout_marginBottom="20dp"
-        android:clickable="true"
-        android:drawable="@android:drawable/ic_media_play"
-        android:focusable="true"
-        android:foregroundGravity="center_vertical|center_horizontal"
-        android:visibility="visible"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/fastforward" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton3"
-        android:layout_width="42dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginLeft="108dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="14dp"
-        android:layout_marginBottom="20dp"
-        android:clickable="true"
-        android:drawable="@android:drawable/ic_media_play"
-        android:focusable="true"
-        android:foregroundGravity="center_vertical|center_horizontal"
-        android:visibility="visible"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/fastbackward" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -78,22 +38,21 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnplay"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
+        android:layout_width="64dp"
+        android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="6dp"
+        android:background="@android:drawable/ic_media_play"
         android:clickable="true"
-        android:drawable="@android:drawable/ic_media_play"
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:visibility="visible"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/playarrow" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
