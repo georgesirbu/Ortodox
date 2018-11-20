@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     Boolean played = false;
 
     String selectedLink = "";
+    int positionLink;
 
     int fineHTTP = 0;
 
@@ -79,24 +80,29 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        final ProgressDialog loadingDialog = new ProgressDialog(this);
-        loadingDialog.setTitle("Muzica");
-        loadingDialog.setMessage("Se incarca...");
-        loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        loadingDialog.setCancelable(false);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Muzica");
+        progressDialog.setMessage("Se incarca...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
 
         final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
+        final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
+        final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
 
-        ListView listView = findViewById(R.id.listview);
+        mButtonSx.setImageResource(R.drawable.fastbackward);
+        mButtonDx.setImageResource(R.drawable.fastforward);
+        mButtonPlay.setImageResource(R.drawable.playarrow);
+
+
+        final ListView listView = findViewById(R.id.listview);
 
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
 
-        final ProgressDialog progressDialog =  ProgressDialog.show(MainActivity.this,
-                "Loading", "Loading Message");
 
-        progressDialog.dismiss();
+
 
         //if (isNetworkConnected()) {
         ReadFileTask tsk = new ReadFileTask();
@@ -162,6 +168,83 @@ public class MainActivity extends AppCompatActivity {
 
 
                 selectedLink = links[+position];
+                positionLink = position;
+                mButtonPlay.performClick();
+
+            }
+        });
+
+
+                mButtonSx.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+
+
+                        try {
+                            mPlayer.stop();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if (mPlayer != null) {
+                            mPlayer.reset();
+                            mPlayer.release();
+                            mPlayer = null;
+                        }else
+                        {
+
+                        }
+
+
+                        played = false;
+
+                        if(positionLink>0) {
+                            positionLink = +positionLink-1;
+                            selectedLink = links[positionLink];
+                        }
+
+                        listView.setItemChecked(positionLink,true);
+
+                        mButtonPlay.performClick();
+
+                    }
+                });
+
+
+        mButtonDx.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+
+                try {
+                    mPlayer.stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (mPlayer != null) {
+                    mPlayer.reset();
+                    mPlayer.release();
+                    mPlayer = null;
+                }else
+                {
+
+                }
+
+
+                played = false;
+
+                int listCount = listView.getAdapter().getCount();
+
+                if( positionLink < listCount-1){
+                    positionLink = +positionLink+1;
+                    selectedLink = links[positionLink];
+                }
+
+                
+
+                listView.setItemChecked(positionLink,true);
+
                 mButtonPlay.performClick();
 
             }
