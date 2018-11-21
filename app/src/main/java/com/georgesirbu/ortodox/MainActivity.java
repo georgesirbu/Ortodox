@@ -12,6 +12,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +31,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -35,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public String listaMedia="";
+    public String listaCategorie="";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -71,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
     int positionLink;
 
     int fineHTTP = 0;
+    int fineHTTP2 = 0;
+
+    private List<Grocery> groceryList = new ArrayList<>();
+    private RecyclerView groceryRecyclerView;
+    private RecyclerViewHorizontalListAdapter groceryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +91,18 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
+        // add a divider after each item for more clarity
+        groceryRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, LinearLayoutManager.HORIZONTAL));
+        groceryAdapter = new RecyclerViewHorizontalListAdapter(groceryList, getApplicationContext());
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
+        groceryRecyclerView.setAdapter(groceryAdapter);
+        populategroceryList();
+
+
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Muzica");
@@ -353,6 +377,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void populategroceryList(){
+
+        ReadCategorieFileTask tsk = new ReadCategorieFileTask();
+        tsk.execute("https://georgesirbu.com/Ortodox/categorie/categorie.cat");
+
+        while(fineHTTP2==0) {
+            Log.d("LISTA CATEGORIE: ", listaCategorie);
+        }
+
+        String[] categories = listaCategorie.split(">");
+        int size = categories.length;
+
+
+        for (int i=0; i<size; i++)
+        {
+
+            Grocery categorie = new Grocery(categories[i], R.drawable.categoria);
+            groceryList.add(categorie);
+
+        }
+
+        groceryAdapter.notifyDataSetChanged();
+
+    }
+
     private class ReadFileTask extends AsyncTask<String,Integer,String> {
 
         protected String doInBackground(String... params) {
@@ -397,6 +446,53 @@ public class MainActivity extends AppCompatActivity {
         protected void finalize() throws Throwable {
             super.finalize();
             fineHTTP = 1;
+        }
+    }
+
+    private class ReadCategorieFileTask extends AsyncTask<String,Integer,String> {
+
+        protected String doInBackground(String... params) {
+            URL url;
+            try {
+                //create url object to point to the file location on internet
+                url = new URL(params[0]);
+                //make a request to server
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                //get InputStream instance
+                InputStream is = con.getInputStream();
+                //create BufferedReader object
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                //read content of the file line by line
+                while ((line = br.readLine()) != null) {
+                    listaCategorie += line;
+
+                }
+
+                br.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //close dialog if error occurs
+            }
+
+            fineHTTP2 = 1;
+            return "Ok";
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            fineHTTP2 = 1;
+
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
+            fineHTTP2 = 1;
         }
     }
 }

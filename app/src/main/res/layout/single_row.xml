@@ -9,16 +9,17 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="69dp"
-        android:layout_height="64dp"
+        android:layout_width="61dp"
+        android:layout_height="57dp"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:layout_weight="1"
+        android:contentDescription="@string/todo"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_media_play"
-        android:contentDescription="@string/todo" />
+        app:srcCompat="@drawable/music" />
 
     <TextView
         android:id="@+id/textView"
