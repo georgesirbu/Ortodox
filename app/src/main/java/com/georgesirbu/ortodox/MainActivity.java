@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public String webCategorii = "/Ortodox/categorii/";
     public String webListe = "/Ortodox/liste/";
     public String webMedia = "";
-
     public String listaMedia="";
     public String linkListaMedia = webhosting + webListe +"acatiste.lst";
 
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
         mButtonSx.setImageResource(R.drawable.fastbackward);
         mButtonDx.setImageResource(R.drawable.fastforward);
-        mButtonPlay.setImageResource(R.drawable.playarrow);
+        mButtonPlay.setImageResource(R.drawable.playbutton);
 
 
         // Get the application context
@@ -173,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                mButtonPlay.setImageResource(R.drawable.playarrow);
+                mButtonPlay.setImageResource(R.drawable.playbutton);
                 played = false;
 
 
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.playarrow);
+                                        mButtonPlay.setImageResource(R.drawable.playbutton);
                                         played = false;
                                         mButtonSx.performClick();
                                     }
@@ -334,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                                     progressDialog.dismiss();
                                 }
                                 mPlayer.start();
-                                mButtonPlay.setImageResource(R.drawable.pausebutton);
+                                mButtonPlay.setImageResource(R.drawable.pause);
                                 ultimoLink = selectedLink;
                                 played = true;
                                 skiped = false;
@@ -354,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.pausebutton);
+                    mButtonPlay.setImageResource(R.drawable.pause);
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -362,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.playarrow);
+                    mButtonPlay.setImageResource(R.drawable.playbutton);
                     played = false;
                     skiped = false;
                 }
