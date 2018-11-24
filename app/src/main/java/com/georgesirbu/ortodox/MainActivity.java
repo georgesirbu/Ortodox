@@ -16,13 +16,17 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -39,8 +43,14 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
+    public String webhosting = "http://venombit.com";
+    public String webCategorii = "/Ortodox/categorii/";
+    public String webListe = "/Ortodox/liste/";
+    public String webMedia = "";
 
     public String listaMedia="";
+    public String linkListaMedia = webhosting + webListe +"acatiste.lst";
+
     public String listaCategorie="";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -84,6 +94,24 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView groceryRecyclerView;
     private RecyclerViewHorizontalListAdapter groceryAdapter;
 
+    public  String[] linksCat;
+
+    public String[] parts;
+    public String[] data ;
+    public  String[] links ;
+
+    public ListView listView;
+
+    public String  ultimoLink;
+
+    public int listCount;
+
+    public  boolean skiped = false;
+
+    public String audioUrl;
+
+    public  String categoriaName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,21 +122,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
+
         // add a divider after each item for more clarity
         groceryRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, LinearLayoutManager.HORIZONTAL));
         groceryAdapter = new RecyclerViewHorizontalListAdapter(groceryList, getApplicationContext());
+
+
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
         populategroceryList();
 
-
-
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Muzica");
-        progressDialog.setMessage("Se incarca...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCancelable(false);
 
         final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
@@ -119,126 +144,18 @@ public class MainActivity extends AppCompatActivity {
         mButtonPlay.setImageResource(R.drawable.playarrow);
 
 
-        final ListView listView = findViewById(R.id.listview);
-
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
 
+        listView = findViewById(R.id.listview);
 
-
-
-        //if (isNetworkConnected()) {
-        ReadFileTask tsk = new ReadFileTask();
-        tsk.execute("https://georgesirbu.com/Ortodox/liste/media.lst");
-
-        while(fineHTTP==0) {
-            Log.d("LISTA: ", listaMedia);
-        }
-
-        String[] parts = listaMedia.split(">");
-        int size = parts.length;
-        String[] data = new String[size/2];
-        final String[] links = new String[size/2];
-        int n = 0;
-        int l = 0;
-
-        for (int i=0; i<size; i++) {
-
-            int p = 2;
-
-            int resto = i % p;
-
-            if (resto == 0) {
-                data[n] = parts[i];
-                n++;
-            } else {
-                links[l] = parts[i];
-                l++;
-            }
-
-        }
-
-        //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, R.layout.single_row, R.id.textView, data);
-
-        listView.setAdapter(adapter);
-
+        caricamentoListaAudio();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                // TODO Auto-generated method stub
-
-                try {
-                    mPlayer.stop();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-               if (mPlayer != null) {
-                   mPlayer.reset();
-                   mPlayer.release();
-                   mPlayer = null;
-               }else
-               {
-
-               }
-
-
-                mButtonPlay.setImageResource(R.drawable.playarrow);
-                played = false;
-
-
-                selectedLink = links[+position];
-                positionLink = position;
-                mButtonPlay.performClick();
-
-            }
-        });
-
-
-                mButtonSx.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-
-
-                        try {
-                            mPlayer.stop();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (mPlayer != null) {
-                            mPlayer.reset();
-                            mPlayer.release();
-                            mPlayer = null;
-                        }else
-                        {
-
-                        }
-
-
-                        played = false;
-
-                        if(positionLink>0) {
-                            positionLink = +positionLink-1;
-                            selectedLink = links[positionLink];
-                        }
-
-                        listView.setItemChecked(positionLink,true);
-
-                        mButtonPlay.performClick();
-
-                    }
-                });
-
-
-        mButtonDx.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
 
                 try {
                     mPlayer.stop();
@@ -256,21 +173,96 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
+                mButtonPlay.setImageResource(R.drawable.playarrow);
                 played = false;
 
-                int listCount = listView.getAdapter().getCount();
 
-                if( positionLink < listCount-1){
-                    positionLink = +positionLink+1;
-                    selectedLink = links[positionLink];
-                }
-
-                
-
-                listView.setItemChecked(positionLink,true);
-
+                selectedLink = links[+position];
+                positionLink = position;
+                skiped = false;
                 mButtonPlay.performClick();
 
+            }
+        });
+
+
+        mButtonSx.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                if (+positionLink < listView.getCount()) {
+
+                    try {
+                        mPlayer.stop();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (mPlayer != null) {
+                        mPlayer.reset();
+                        mPlayer.release();
+                        mPlayer = null;
+                    } else {
+
+                    }
+
+
+                    played = false;
+
+                    if (positionLink > 0) {
+                        positionLink = +positionLink - 1;
+                        selectedLink = links[positionLink];
+                    }
+
+                    selectedLink = links[positionLink];
+                    listView.setItemChecked(positionLink, true);
+                    skiped = true;
+                    mButtonPlay.performClick();
+
+                }
+
+            }
+        });
+
+
+        mButtonDx.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                if (+positionLink < listView.getCount()) {
+
+
+                    try {
+                        mPlayer.stop();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (mPlayer != null) {
+                        mPlayer.reset();
+                        mPlayer.release();
+                        mPlayer = null;
+                    } else {
+
+                    }
+
+
+                    played = false;
+
+                    listCount = listView.getAdapter().getCount();
+
+                    if (positionLink < listCount - 1) {
+                        positionLink = +positionLink + 1;
+                        selectedLink = links[positionLink];
+                    }
+
+
+                    selectedLink = links[positionLink];
+                    listView.setItemChecked(positionLink, true);
+                    skiped = true;
+                    mButtonPlay.performClick();
+
+                }
             }
         });
 
@@ -281,95 +273,98 @@ public class MainActivity extends AppCompatActivity {
 
                 if(played == false ) {
 
+                    if ((ultimoLink != selectedLink) || (skiped == true))
+                    {
 
-                    progressDialog.show();
+                        // Initialize a new media player instance
+                        mPlayer = new MediaPlayer();
 
-                    // Initialize a new media player instance
-                    mPlayer = new MediaPlayer();
-
-                    mButtonPlay.setImageResource(R.drawable.pausebutton);
-
-                    // The audio url to play
-                    String audioUrl = selectedLink;
-
-
-
-                    // Set the media player audio stream type
-                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    //Try to play music/audio from url
-
-                    try{
-
-
-                        // Set the audio data source
-                        mPlayer.setDataSource(audioUrl);
-
-
-                        // Prepare the media player
-                        mPlayer.prepare();
-
-
-
-                        // Start playing audio from http url
-                        mPlayer.start();
-
-                        played = true;
-
-
-
-                        // Inform user for audio streaming
-                        //Toast.makeText(mContext,"Playing",Toast.LENGTH_SHORT).show();
-
-
-                    }catch (IOException e){
-                        // Catch the exception
-                        e.printStackTrace();
-                        //loadingDialog.dismiss();
-                    }catch (IllegalArgumentException e){
-                        e.printStackTrace();
-                        //loadingDialog.dismiss();
-                    }catch (SecurityException e){
-                        e.printStackTrace();
-                        //loadingDialog.dismiss();
-                    }catch (IllegalStateException e){
-                        e.printStackTrace();
-                        //loadingDialog.dismiss();
-                    }
-
-
-                    mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                            mButtonPlay.setImageResource(R.drawable.playarrow);
-                            played = false;
-                        }
-                    });
-
-
-
-                    mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-
-                            if (progressDialog != null && progressDialog.isShowing()){
-                                progressDialog.dismiss();
+                        new AsyncTask<String, Integer, String>() {
+                            protected void onPreExecute() {
+                                // do pre execute stuff...
+                                skiped = false;
+                                progressDialog.setTitle(categoriaName);
+                                progressDialog.setMessage("Se incarca...");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+                                // The audio url to play
+                                audioUrl = selectedLink;
+                                // Set the media player audio stream type
+                                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             }
 
-                        }
+                            protected String doInBackground(String... params) {
+                                // do background stuff...
+                                //Try to play music/audio from url
+                                try{
+                                    // Set the audio data source
+                                    mPlayer.setDataSource(audioUrl);
+                                    // Prepare the media player
+                                    mPlayer.prepare();
 
+                                }catch (IOException e){
+                                    // Catch the exception
+                                    e.printStackTrace();
+                                    //loadingDialog.dismiss();
+                                }catch (IllegalArgumentException e){
+                                    e.printStackTrace();
+                                    //loadingDialog.dismiss();
+                                }catch (SecurityException e){
+                                    e.printStackTrace();
+                                    //loadingDialog.dismiss();
+                                }catch (IllegalStateException e){
+                                    e.printStackTrace();
+                                    //loadingDialog.dismiss();
+                                }
+                                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    @Override
+                                    public void onCompletion(MediaPlayer mediaPlayer) {
+                                        //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                        mButtonPlay.setImageResource(R.drawable.playarrow);
+                                        played = false;
+                                        mButtonSx.performClick();
+                                    }
+                                });
+                                return "";
+                            }
+                            protected void onPostExecute(String result) {
+                                // do post execute stuff...
+                                if (progressDialog != null && progressDialog.isShowing()){
+                                    progressDialog.dismiss();
+                                }
+                                mPlayer.start();
+                                mButtonPlay.setImageResource(R.drawable.pausebutton);
+                                ultimoLink = selectedLink;
+                                played = true;
+                                skiped = false;
+                            }
+                        }.execute();
 
-                    });
+                    }else
+                    {
 
+                        if (mPlayer == null){
+                            ultimoLink ="";
+                            mButtonPlay.performClick();
+                        }else
+                            {
+                                mPlayer.start();
+                            }
 
+                    }
 
-
+                    mButtonPlay.setImageResource(R.drawable.pausebutton);
+                    ultimoLink = selectedLink;
+                    played = true;
+                    skiped = false;
 
                 }else
                 {
-                    mPlayer.stop();
+                    mPlayer.pause();
                     mButtonPlay.setImageResource(R.drawable.playarrow);
                     played = false;
+                    skiped = false;
                 }
 
             }
@@ -377,28 +372,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void populategroceryList(){
+    public void caricamentoListaAudio()
+    {
+        listaMedia= "";
+
+        //if (isNetworkConnected()) {
+        ReadFileTask tsk = new ReadFileTask();
+        tsk.execute(linkListaMedia);
+
+    }
+
+    public String[] populategroceryList(){
+
+        listaCategorie = "";
 
         ReadCategorieFileTask tsk = new ReadCategorieFileTask();
-        tsk.execute("https://georgesirbu.com/Ortodox/categorie/categorie.cat");
-
-        while(fineHTTP2==0) {
-            Log.d("LISTA CATEGORIE: ", listaCategorie);
-        }
-
-        String[] categories = listaCategorie.split(">");
-        int size = categories.length;
+        tsk.execute(webhosting+webCategorii+"categorie.cat");
 
 
-        for (int i=0; i<size; i++)
-        {
 
-            Grocery categorie = new Grocery(categories[i], R.drawable.categoria);
-            groceryList.add(categorie);
+        return linksCat;
 
-        }
-
-        groceryAdapter.notifyDataSetChanged();
 
     }
 
@@ -439,6 +433,39 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
             fineHTTP = 1;
+
+            parts = listaMedia.split(">");
+
+            int size = parts.length;
+            data = new String[size/2];
+            links = new String[size/2];
+
+
+            int n = 0;
+            int l = 0;
+
+            for (int i=0; i<size; i++) {
+
+                int p = 2;
+
+                int resto = i % p;
+
+                if (resto == 0) {
+                    data[n] = parts[i];
+                    n++;
+                } else {
+                    links[l] = parts[i];
+                    l++;
+                }
+
+            }
+
+            //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+            ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this, R.layout.single_row, R.id.textView, data);
+
+            listView.setAdapter(adapter);
+
+            fineHTTP = 0;
 
         }
 
@@ -487,6 +514,49 @@ public class MainActivity extends AppCompatActivity {
 
             fineHTTP2 = 1;
 
+            while(fineHTTP2==0) {
+                Log.d("LISTA CATEGORIE: ", listaCategorie);
+            }
+
+            String[] categories = listaCategorie.split(">");
+            int size = categories.length;
+
+
+            final String[] dataCat = new String[size/2];
+            linksCat = new String[size/2];
+            int n = 0;
+            int l = 0;
+
+            for (int i=0; i<size; i++) {
+
+                int p = 2;
+
+                int resto = i % p;
+
+                if (resto == 0) {
+                    dataCat[n] = categories[i];
+                    n++;
+                } else {
+                    linksCat[l] = categories[i];
+                    l++;
+                }
+
+            }
+
+            int sizeCat = dataCat.length;
+
+            for (int i=0; i<sizeCat; i++)
+            {
+
+                Grocery categorie = new Grocery(dataCat[i], R.drawable.categoria);
+                groceryList.add(categorie);
+
+            }
+
+            groceryAdapter.notifyDataSetChanged();
+
+            fineHTTP2 = 0;
+
         }
 
         @Override
@@ -495,4 +565,56 @@ public class MainActivity extends AppCompatActivity {
             fineHTTP2 = 1;
         }
     }
+
+
+    public class RecyclerViewHorizontalListAdapter extends RecyclerView.Adapter<RecyclerViewHorizontalListAdapter.GroceryViewHolder>{
+        private List<Grocery> horizontalGrocderyList;
+        Context context;
+
+        public RecyclerViewHorizontalListAdapter(List<Grocery> horizontalGrocderyList, Context context){
+            this.horizontalGrocderyList= horizontalGrocderyList;
+            this.context = context;
+        }
+
+        @Override
+        public GroceryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            //inflate the layout file
+            View groceryProductView = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_list_grocery_item, parent, false);
+            GroceryViewHolder gvh = new GroceryViewHolder(groceryProductView);
+            return gvh;
+        }
+
+        @Override
+        public void onBindViewHolder(GroceryViewHolder holder, final int position) {
+            holder.imageView.setImageResource(horizontalGrocderyList.get(position).getProductImage());
+            holder.txtview.setText(horizontalGrocderyList.get(position).getProductName());
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoriaName = horizontalGrocderyList.get(position).getProductName().toString();
+                    //Toast.makeText(context, productName + " is selected " + position, Toast.LENGTH_SHORT).show();
+
+                    linkListaMedia = linksCat[position];
+                    caricamentoListaAudio();
+
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return horizontalGrocderyList.size();
+        }
+
+        public class GroceryViewHolder extends RecyclerView.ViewHolder {
+            ImageView imageView;
+            TextView txtview;
+            public GroceryViewHolder(View view) {
+                super(view);
+                imageView=view.findViewById(R.id.idProductImage);
+                txtview=view.findViewById(R.id.idProductName);
+            }
+        }
+    }
+
 }
