@@ -15,11 +15,12 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:layout_weight="1"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/todo"
-        app:layout_constraintStart_toStartOf="parent"
 
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/music" />
+        app:srcCompat="@drawable/audios2" />
 
     <TextView
         android:id="@+id/textView"

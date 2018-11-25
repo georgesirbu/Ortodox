@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     Boolean played = false;
 
     String selectedLink = "";
+    String selectedName = "";
     int positionLink;
 
     int fineHTTP = 0;
@@ -92,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
     private List<Grocery> groceryList = new ArrayList<>();
     private RecyclerView groceryRecyclerView;
     private RecyclerViewHorizontalListAdapter groceryAdapter;
+
+    private SeekBar barraAudio;
+    private TextView lblRiproduzzione;
 
     public  String[] linksCat;
 
@@ -110,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
     public String audioUrl;
 
     public  String categoriaName;
+    private Handler mHandler;
+    private Runnable mRunnable;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
+        barraAudio = findViewById(R.id.barRiproduzione);
+
+        lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
         mButtonSx.setImageResource(R.drawable.fastbackward);
         mButtonDx.setImageResource(R.drawable.fastforward);
@@ -146,6 +159,32 @@ public class MainActivity extends AppCompatActivity {
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
+
+        // Initialize the handler
+        mHandler = new Handler();
+
+        // Set a change listener for seek bar
+        barraAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar barraAudio, int i, boolean b) {
+                if(mPlayer!=null && b){
+
+                    mPlayer.seekTo(i*1000);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar barraAudio) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar barraAudio) {
+
+            }
+
+        });
 
         listView = findViewById(R.id.listview);
 
@@ -158,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     mPlayer.stop();
+                    if(mHandler!=null){
+                        mHandler.removeCallbacks(mRunnable);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -178,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
                 selectedLink = links[+position];
                 positionLink = position;
+                selectedName = data[+position];
                 skiped = false;
                 mButtonPlay.performClick();
 
@@ -193,6 +236,9 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         mPlayer.stop();
+                        if(mHandler!=null){
+                            mHandler.removeCallbacks(mRunnable);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -211,9 +257,11 @@ public class MainActivity extends AppCompatActivity {
                     if (positionLink > 0) {
                         positionLink = +positionLink - 1;
                         selectedLink = links[positionLink];
+                        selectedName = data[+positionLink];
                     }
 
                     selectedLink = links[positionLink];
+                    selectedName = data[+positionLink];
                     listView.setItemChecked(positionLink, true);
                     skiped = true;
                     mButtonPlay.performClick();
@@ -233,6 +281,9 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         mPlayer.stop();
+                        if(mHandler!=null){
+                            mHandler.removeCallbacks(mRunnable);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -253,10 +304,12 @@ public class MainActivity extends AppCompatActivity {
                     if (positionLink < listCount - 1) {
                         positionLink = +positionLink + 1;
                         selectedLink = links[positionLink];
+                        selectedName = data[+positionLink];
                     }
 
 
                     selectedLink = links[positionLink];
+                    selectedName = data[+positionLink];
                     listView.setItemChecked(positionLink, true);
                     skiped = true;
                     mButtonPlay.performClick();
@@ -333,8 +386,13 @@ public class MainActivity extends AppCompatActivity {
                                     progressDialog.dismiss();
                                 }
                                 mPlayer.start();
+                                // Get the current audio stats
+                                getAudioStats();
+                                // Initialize the seek bar
+                                initializeSeekBar();
                                 mButtonPlay.setImageResource(R.drawable.pause);
                                 ultimoLink = selectedLink;
+                                lblRiproduzzione.setText(selectedName);
                                 played = true;
                                 skiped = false;
                             }
@@ -368,6 +426,34 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    protected void initializeSeekBar(){
+        barraAudio.setMax(mPlayer.getDuration()/1000);
+
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(mPlayer!=null){
+                    int mCurrentPosition = mPlayer.getCurrentPosition()/1000; // In milliseconds
+                    barraAudio.setProgress(mCurrentPosition);
+                    getAudioStats();
+                }
+                mHandler.postDelayed(mRunnable,1000);
+            }
+        };
+        mHandler.postDelayed(mRunnable,1000);
+    }
+
+    protected void getAudioStats(){
+        int duration  = mPlayer.getDuration()/1000; // In milliseconds
+        int due = (mPlayer.getDuration() - mPlayer.getCurrentPosition())/1000;
+        int pass = duration - due;
+
+        //mPass.setText("" + pass + " seconds");
+        //mDuration.setText("" + duration + " seconds");
+        //mDue.setText("" + due + " seconds");
 
     }
 
@@ -547,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i=0; i<sizeCat; i++)
             {
 
-                Grocery categorie = new Grocery(dataCat[i], R.drawable.categoria);
+                Grocery categorie = new Grocery(dataCat[i], R.drawable.playlist);
                 groceryList.add(categorie);
 
             }
