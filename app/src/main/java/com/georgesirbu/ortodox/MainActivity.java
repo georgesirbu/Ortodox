@@ -3,6 +3,7 @@ package com.georgesirbu.ortodox;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -60,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation1:
 
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation2:
 
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation3:
 
                     return true;
             }
@@ -147,14 +149,15 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
+
+
         barraAudio = findViewById(R.id.barRiproduzione);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
-        mButtonSx.setImageResource(R.drawable.fastbackward);
-        mButtonDx.setImageResource(R.drawable.fastforward);
-        mButtonPlay.setImageResource(R.drawable.playbutton);
-
+        mButtonSx.setImageResource(R.drawable.butoninapoi);
+        mButtonDx.setImageResource(R.drawable.butoninainte);
+        mButtonPlay.setImageResource(R.drawable.butonplay);
 
         // Get the application context
         mContext = getApplicationContext();
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                mButtonPlay.setImageResource(R.drawable.playbutton);
+                mButtonPlay.setImageResource(R.drawable.butonplay);
                 played = false;
 
 
@@ -373,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.playbutton);
+                                        mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
                                         mButtonSx.performClick();
                                     }
@@ -390,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                                 getAudioStats();
                                 // Initialize the seek bar
                                 initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.pause);
+                                mButtonPlay.setImageResource(R.drawable.butonpausa);
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
@@ -411,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.pause);
+                    mButtonPlay.setImageResource(R.drawable.butonpausa);
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -419,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.playbutton);
+                    mButtonPlay.setImageResource(R.drawable.butonplay);
                     played = false;
                     skiped = false;
                 }
