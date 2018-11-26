@@ -7,16 +7,155 @@
     android:layout_height="match_parent"
     tools:context=".Biblioteca">
 
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="4dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/like"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@android:color/holo_red_light"
+        app:srcCompat="@drawable/ic_like"
+        app:useCompatPadding="false" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnsx2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="4dp"
+        android:background="@android:drawable/ic_media_play"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="@android:color/holo_orange_light"
+        app:srcCompat="@drawable/ic_like"
+        app:useCompatPadding="false" />
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnplay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toStartOf="@+id/btndx"
+        app:layout_constraintStart_toEndOf="@+id/btnsx"
+        app:rippleColor="@android:color/holo_red_light"
+        app:srcCompat="@drawable/butonplay" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnsx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:scaleType="center"
+        app:srcCompat="@drawable/butoninapoi"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintStart_toEndOf="@+id/btnsx2"
+        app:rippleColor="@android:color/holo_orange_dark" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btndx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center_vertical|center_horizontal|center"
+        android:scaleType="center"
+        app:srcCompat="@drawable/butoninainte"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+        app:rippleColor="@android:color/holo_orange_dark"
+        tools:background="@drawable/next" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/lblRiproduzzione"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textSize="12sp" />
+
+        <SeekBar
+            android:id="@+id/barRiproduzione"
+            style="@android:style/Widget.Material.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
