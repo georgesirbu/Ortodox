@@ -63,13 +63,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation1:
-
+                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    finish();
                     return true;
                 case R.id.navigation2:
-
+                    startActivity(new Intent(MainActivity.this, Personal.class));
+                    finish();
                     return true;
                 case R.id.navigation3:
-
+                    startActivity(new Intent(MainActivity.this, Biblioteca.class));
+                    finish();
                     return true;
             }
             return false;
@@ -131,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
+        //navigation.getMenu().findItem(R.id.navigation2).setChecked(false);
+        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
 
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
 
