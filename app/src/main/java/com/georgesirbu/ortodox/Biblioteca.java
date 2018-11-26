@@ -147,6 +147,9 @@ public class Biblioteca extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        setTitle("Favorite");
+        //getActionBar().setIcon(R.drawable.preferitimenu);
+
         //navigation.getMenu().findItem(R.id.navigation1).setChecked(false);
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(false);
         navigation.getMenu().findItem(R.id.navigation3).setChecked(true);

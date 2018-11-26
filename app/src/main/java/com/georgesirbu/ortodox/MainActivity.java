@@ -165,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        setTitle("Ortodox");
+        //getActionBar().setIcon(R.drawable.preferitimenu);
+
         //navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
         navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
