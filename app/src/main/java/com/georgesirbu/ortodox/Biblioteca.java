@@ -56,14 +56,17 @@ public class Biblioteca extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation2:
+                    destroymPlayer();
                     startActivity(new Intent(Biblioteca.this, MainActivity.class));
                     finish();
                     return true;
                 case R.id.navigation1:
+                    destroymPlayer();
                     startActivity(new Intent(Biblioteca.this, Personal.class));
                     finish();
                     return true;
                 case R.id.navigation3:
+                    destroymPlayer();
                     startActivity(new Intent(Biblioteca.this, Biblioteca.class));
                     finish();
                     return true;
@@ -71,6 +74,27 @@ public class Biblioteca extends AppCompatActivity {
             return false;
         }
     };
+
+    private void destroymPlayer()
+    {
+        try {
+            mPlayer.stop();
+            if(mHandler!=null){
+                mHandler.removeCallbacks(mRunnable);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlayer.release();
+            mPlayer = null;
+        }else
+        {
+
+        }
+    }
 
     private Context mContext;
     private Activity mActivity;
