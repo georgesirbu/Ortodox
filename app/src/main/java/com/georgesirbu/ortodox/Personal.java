@@ -18,11 +18,11 @@ public class Personal extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation1:
+                case R.id.navigation2:
                     startActivity(new Intent(Personal.this, MainActivity.class));
                     finish();
                     return true;
-                case R.id.navigation2:
+                case R.id.navigation1:
                     startActivity(new Intent(Personal.this, Personal.class));
                     finish();
                     return true;
@@ -44,8 +44,8 @@ public class Personal extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        //navigation.getMenu().findItem(R.id.navigation1).setChecked(false);
-        navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
+        navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
+        //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
 
     }

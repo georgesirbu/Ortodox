@@ -18,11 +18,11 @@ public class Biblioteca extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation1:
+                case R.id.navigation2:
                     startActivity(new Intent(Biblioteca.this, MainActivity.class));
                     finish();
                     return true;
-                case R.id.navigation2:
+                case R.id.navigation1:
                     startActivity(new Intent(Biblioteca.this, Personal.class));
                     finish();
                     return true;
