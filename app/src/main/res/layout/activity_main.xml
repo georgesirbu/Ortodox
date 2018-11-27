@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@android:color/holo_orange_light"
-        app:srcCompat="@drawable/ic_like"
+        app:srcCompat="@drawable/share"
         app:useCompatPadding="false" />
 
     <LinearLayout

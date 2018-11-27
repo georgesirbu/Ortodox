@@ -509,36 +509,39 @@ public class Biblioteca extends AppCompatActivity {
 
         listaMedia = text.toString();
 
-        parts = listaMedia.split(">");
+        if (!listaMedia.isEmpty()) {
 
-        int size = parts.length;
-        data = new String[size/2];
-        links = new String[size/2];
+            parts = listaMedia.split(">");
 
-        int n = 0;
-        int l = 0;
+            int size = parts.length;
+            data = new String[size / 2];
+            links = new String[size / 2];
 
-        for (int i=0; i<size; i++) {
+            int n = 0;
+            int l = 0;
 
-            int p = 2;
+            for (int i = 0; i < size; i++) {
 
-            int resto = i % p;
+                int p = 2;
 
-            if (resto == 0) {
-                data[n] = parts[i];
-                n++;
-            } else {
-                links[l] = parts[i];
-                l++;
+                int resto = i % p;
+
+                if (resto == 0) {
+                    data[n] = parts[i];
+                    n++;
+                } else {
+                    links[l] = parts[i];
+                    l++;
+                }
+
             }
 
+            //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Biblioteca.this, R.layout.single_row, R.id.textView, data);
+
+            listView.setAdapter(adapter);
+
         }
-
-        //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(Biblioteca.this, R.layout.single_row, R.id.textView, data);
-
-        listView.setAdapter(adapter);
-
     }
 
 

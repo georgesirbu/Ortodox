@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -165,6 +166,19 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+            startActivity(new Intent(MainActivity.this, networkState.class));
+            finish();
+        }
+
         setTitle("Ortodox");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
@@ -182,7 +196,10 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
-        populategroceryList();
+
+        if (connected) {
+            populategroceryList();
+        }
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -232,7 +249,9 @@ public class MainActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listview);
 
+        if (connected){
         caricamentoListaAudio();
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
