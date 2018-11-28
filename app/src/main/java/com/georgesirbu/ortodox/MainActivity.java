@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -157,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable mRunnable;
 
+    public String sharedLink;
+    public  int idAudioRilevato;
+
+    boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        boolean connected = false;
+
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -207,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
         final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
+        final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
 
 
         barraAudio = findViewById(R.id.barRiproduzione);
@@ -217,6 +223,19 @@ public class MainActivity extends AppCompatActivity {
         mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.butonplay);
 
+        Intent intentDeepLink = getIntent();
+        sharedLink = intentDeepLink.getDataString();
+        if (sharedLink!=null) {
+            String[] separazioneSharedLink = sharedLink.split("namestring=");
+            separazioneSharedLink = separazioneSharedLink[1].split(";end;");
+            sharedLink = separazioneSharedLink[0];
+            sharedLink.replaceAll("%20", " ");
+
+            //String dta = intnt.getStringExtra("namestring");
+            //dta = dta +"\n"+ intnt.getDataString();
+
+            Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+        }
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
@@ -248,10 +267,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.listview);
-
-        if (connected){
-        caricamentoListaAudio();
-        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -290,6 +305,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonShare.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring=http://venombit.com/Ortodox/media/Al%20doilea%20Paraclis%20al%20Maicii%20Domnului%20(medicament%20pentru%20suflet).mp3;end;";//selectedLink;
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
+
+
+            }
+        });
 
         mButtonSx.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -552,6 +581,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        if (connected){
+            caricamentoListaAudio();
+        }
+    }
+
     protected void initializeSeekBar(){
         barraAudio.setMax(mPlayer.getDuration()/1000);
 
@@ -596,8 +634,6 @@ public class MainActivity extends AppCompatActivity {
 
         ReadCategorieFileTask tsk = new ReadCategorieFileTask();
         tsk.execute(webhosting+webCategorii+"categorie.cat");
-
-
 
         return linksCat;
 
@@ -673,6 +709,50 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
 
             fineHTTP = 0;
+
+            if (sharedLink!=null)
+            {
+
+                try {
+                    mPlayer.stop();
+                    if(mHandler!=null){
+                        mHandler.removeCallbacks(mRunnable);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (mPlayer != null) {
+                    mPlayer.reset();
+                    mPlayer.release();
+                    mPlayer = null;
+                }else
+                {
+
+                }
+
+
+                //mButtonPlay.setImageResource(R.drawable.butonplay);
+                played = false;
+
+
+                for(int i = 0; i < links.length; i++){
+                    String thisString = links[i];
+
+                     if(thisString.equals(sharedLink)){
+                        idAudioRilevato = i;
+                    }
+                }
+
+                selectedLink = links[+idAudioRilevato];
+                positionLink = idAudioRilevato;
+                selectedName = data[+idAudioRilevato];
+                skiped = false;
+
+                //mButtonPlay.performClick();
+
+            }
+
 
         }
 
