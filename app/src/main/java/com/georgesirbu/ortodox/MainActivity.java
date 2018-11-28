@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     private Activity mActivity;
 
     private LinearLayout mRootLayout;
-    private Button mButtonPlay;
+    private FloatingActionButton mButtonPlay;
 
     MediaPlayer mPlayer;
 
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
-        final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
+        mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
         final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             String[] separazioneSharedLink = sharedLink.split("namestring=");
             separazioneSharedLink = separazioneSharedLink[1].split(";end;");
             sharedLink = separazioneSharedLink[0];
-            sharedLink.replaceAll("%20", " ");
+            sharedLink = sharedLink.replaceAll("%20", " ");
 
             //String dta = intnt.getStringExtra("namestring");
             //dta = dta +"\n"+ intnt.getDataString();
@@ -309,9 +309,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                String linkToShare = selectedLink;
+                linkToShare = linkToShare.replaceAll(" ", "%20");
+
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = "intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring=http://venombit.com/Ortodox/media/Al%20doilea%20Paraclis%20al%20Maicii%20Domnului%20(medicament%20pentru%20suflet).mp3;end;";//selectedLink;
+                String shareBody = "www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
@@ -579,15 +582,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if (connected){
+            caricamentoListaAudio();
+        }
+
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        if (connected){
-            caricamentoListaAudio();
-        }
+
     }
 
     protected void initializeSeekBar(){
@@ -750,6 +755,15 @@ public class MainActivity extends AppCompatActivity {
                 skiped = false;
 
                 //mButtonPlay.performClick();
+
+                mButtonPlay.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        mButtonPlay.performClick();
+                    }
+                });
+
+                sharedLink = null;
 
             }
 
