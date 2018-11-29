@@ -223,18 +223,47 @@ public class MainActivity extends AppCompatActivity {
         mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.butonplay);
 
-        Intent intentDeepLink = getIntent();
-        sharedLink = intentDeepLink.getDataString();
+
+
+        try {
+            Intent intentDeepLink = getIntent();
+
+            //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+
+            sharedLink = intentDeepLink.getDataString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+        }
+
+
         if (sharedLink!=null) {
+
+            try {
             String[] separazioneSharedLink = sharedLink.split("namestring=");
             separazioneSharedLink = separazioneSharedLink[1].split(";end;");
-            sharedLink = separazioneSharedLink[0];
-            sharedLink = sharedLink.replaceAll("%20", " ");
 
-            //String dta = intnt.getStringExtra("namestring");
-            //dta = dta +"\n"+ intnt.getDataString();
 
-            Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+            if (separazioneSharedLink[0] == "null")
+            {
+                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+            }else {
+
+                sharedLink = separazioneSharedLink[0];
+                sharedLink = sharedLink.replaceAll("%20", " ");
+
+                //String dta = intnt.getStringExtra("namestring");
+                //dta = dta +"\n"+ intnt.getDataString();
+
+                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+            }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+            }
         }
         // Get the application context
         mContext = getApplicationContext();
@@ -314,7 +343,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = "www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
+                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
@@ -713,6 +743,8 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
 
             fineHTTP = 0;
+
+            //Toast.makeText(MainActivity.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
             if (sharedLink!=null)
             {
