@@ -160,6 +160,8 @@ public class Biblioteca extends AppCompatActivity {
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
         final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
+        final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
+
 
 
         barraAudio = findViewById(R.id.barRiproduzione);
@@ -169,6 +171,7 @@ public class Biblioteca extends AppCompatActivity {
         mButtonSx.setImageResource(R.drawable.butoninapoi);
         mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.butonplay);
+
 
         // Get the application context
         mContext = getApplicationContext();
@@ -333,6 +336,26 @@ public class Biblioteca extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
+
+            }
+
+        });
+
+        mButtonShare.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                String linkToShare = selectedLink;
+                linkToShare = linkToShare.replaceAll(" ", "%20");
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
+                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
 
             }
 
