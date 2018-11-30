@@ -1,5 +1,6 @@
 package com.georgesirbu.ortodox;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -17,14 +18,17 @@ public class Personal extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                case R.id.navigation2:
+                    startActivity(new Intent(Personal.this, MainActivity.class));
+                    finish();
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation1:
+                    startActivity(new Intent(Personal.this, Personal.class));
+                    finish();
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation3:
+                    startActivity(new Intent(Personal.this, Biblioteca.class));
+                    finish();
                     return true;
             }
             return false;
@@ -39,6 +43,11 @@ public class Personal extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
+        //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
+       //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
+
     }
 
 }

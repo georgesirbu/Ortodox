@@ -3,13 +3,20 @@ package com.georgesirbu.ortodox;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -32,15 +39,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,26 +73,52 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-
+                case R.id.navigation2:
+                    destroymPlayer();
+                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    finish();
                     return true;
-                case R.id.navigation_dashboard:
-
+                case R.id.navigation1:
+                    destroymPlayer();
+                    startActivity(new Intent(MainActivity.this, Personal.class));
+                    finish();
                     return true;
-                case R.id.navigation_notifications:
-
+                case R.id.navigation3:
+                    destroymPlayer();
+                    startActivity(new Intent(MainActivity.this, Biblioteca.class));
+                    finish();
                     return true;
             }
             return false;
         }
     };
 
+    private void destroymPlayer()
+    {
+        try {
+            mPlayer.stop();
+            if(mHandler!=null){
+                mHandler.removeCallbacks(mRunnable);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlayer.release();
+            mPlayer = null;
+        }else
+        {
+
+        }
+    }
 
     private Context mContext;
     private Activity mActivity;
 
     private LinearLayout mRootLayout;
-    private Button mButtonPlay;
+    private FloatingActionButton mButtonPlay;
 
     MediaPlayer mPlayer;
 
@@ -103,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String[] parts;
     public String[] data ;
-    public  String[] links ;
+    public String[] links ;
 
     public ListView listView;
 
@@ -119,7 +158,10 @@ public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable mRunnable;
 
+    public String sharedLink;
+    public  int idAudioRilevato;
 
+    boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +171,25 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+            startActivity(new Intent(MainActivity.this, networkState.class));
+            finish();
+        }
+
+        setTitle("Ortodox");
+        //getActionBar().setIcon(R.drawable.preferitimenu);
+
+        //navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
+        navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
+        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
 
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
 
@@ -140,22 +201,70 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
-        populategroceryList();
+
+        if (connected) {
+            populategroceryList();
+        }
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
-        final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
+        mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
+        final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
+        final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
+
+
         barraAudio = findViewById(R.id.barRiproduzione);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
-        mButtonSx.setImageResource(R.drawable.fastbackward);
-        mButtonDx.setImageResource(R.drawable.fastforward);
-        mButtonPlay.setImageResource(R.drawable.playbutton);
+        mButtonSx.setImageResource(R.drawable.butoninapoi);
+        mButtonDx.setImageResource(R.drawable.butoninainte);
+        mButtonPlay.setImageResource(R.drawable.butonplay);
 
 
+
+        try {
+            Intent intentDeepLink = getIntent();
+
+            //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+
+            sharedLink = intentDeepLink.getDataString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+        }
+
+
+        if (sharedLink!=null) {
+
+            try {
+            String[] separazioneSharedLink = sharedLink.split("namestring=");
+            separazioneSharedLink = separazioneSharedLink[1].split(";end;");
+
+
+            if (separazioneSharedLink[0] == "null")
+            {
+                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+            }else {
+
+                sharedLink = separazioneSharedLink[0];
+                sharedLink = sharedLink.replaceAll("%20", " ");
+
+                //String dta = intnt.getStringExtra("namestring");
+                //dta = dta +"\n"+ intnt.getDataString();
+
+                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+            }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+            }
+        }
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
@@ -188,8 +297,6 @@ public class MainActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listview);
 
-        caricamentoListaAudio();
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -214,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                mButtonPlay.setImageResource(R.drawable.playbutton);
+                mButtonPlay.setImageResource(R.drawable.butonplay);
                 played = false;
 
 
@@ -227,6 +334,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonShare.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                String linkToShare = selectedLink;
+                linkToShare = linkToShare.replaceAll(" ", "%20");
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
+                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
+
+            }
+        });
 
         mButtonSx.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -318,6 +442,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mButtonFavorite.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+
+                String line="";
+                String oldFavorites="";
+
+                //Get the text file
+                File file = new File(dirPath, "favoriteList.lst");
+
+                //Read text from file
+                StringBuilder text = new StringBuilder();
+
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        //text.append('\n');
+                    }
+                    br.close();
+                }
+                catch (IOException e) {
+                    //You'll need to add proper error handling here
+                }
+
+                oldFavorites = text.toString();
+
+                File projDir = new File(dirPath);
+                if (!projDir.exists()) {
+                    projDir.mkdirs();
+                }
+
+                try {
+
+                    File gpxfile = new File(dirPath, "favoriteList.lst");
+                    FileWriter writer = new FileWriter(gpxfile);
+
+                    if (oldFavorites.isEmpty())
+                    {
+                        writer.append(selectedName + ">" + selectedLink);
+                    }else
+                        {
+                            writer.append(oldFavorites + ">"+selectedName + ">" + selectedLink);
+                        }
+
+                    writer.flush();
+                    writer.close();
+
+                    Toast.makeText(MainActivity.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
 
         mButtonPlay.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -373,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.playbutton);
+                                        mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
                                         mButtonSx.performClick();
                                     }
@@ -390,7 +574,7 @@ public class MainActivity extends AppCompatActivity {
                                 getAudioStats();
                                 // Initialize the seek bar
                                 initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.pause);
+                                mButtonPlay.setImageResource(R.drawable.butonpausa);
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
@@ -411,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.pause);
+                    mButtonPlay.setImageResource(R.drawable.butonpausa);
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -419,13 +603,24 @@ public class MainActivity extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.playbutton);
+                    mButtonPlay.setImageResource(R.drawable.butonplay);
                     played = false;
                     skiped = false;
                 }
 
             }
         });
+
+        if (connected){
+            caricamentoListaAudio();
+        }
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
     }
 
@@ -473,8 +668,6 @@ public class MainActivity extends AppCompatActivity {
 
         ReadCategorieFileTask tsk = new ReadCategorieFileTask();
         tsk.execute(webhosting+webCategorii+"categorie.cat");
-
-
 
         return linksCat;
 
@@ -525,7 +718,6 @@ public class MainActivity extends AppCompatActivity {
             data = new String[size/2];
             links = new String[size/2];
 
-
             int n = 0;
             int l = 0;
 
@@ -551,6 +743,61 @@ public class MainActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
 
             fineHTTP = 0;
+
+            //Toast.makeText(MainActivity.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
+
+            if (sharedLink!=null)
+            {
+
+                try {
+                    mPlayer.stop();
+                    if(mHandler!=null){
+                        mHandler.removeCallbacks(mRunnable);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (mPlayer != null) {
+                    mPlayer.reset();
+                    mPlayer.release();
+                    mPlayer = null;
+                }else
+                {
+
+                }
+
+
+                //mButtonPlay.setImageResource(R.drawable.butonplay);
+                played = false;
+
+
+                for(int i = 0; i < links.length; i++){
+                    String thisString = links[i];
+
+                     if(thisString.equals(sharedLink)){
+                        idAudioRilevato = i;
+                    }
+                }
+
+                selectedLink = links[+idAudioRilevato];
+                positionLink = idAudioRilevato;
+                selectedName = data[+idAudioRilevato];
+                skiped = false;
+
+                //mButtonPlay.performClick();
+
+                mButtonPlay.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        mButtonPlay.performClick();
+                    }
+                });
+
+                sharedLink = null;
+
+            }
+
 
         }
 
@@ -649,6 +896,11 @@ public class MainActivity extends AppCompatActivity {
             super.finalize();
             fineHTTP2 = 1;
         }
+
+
+
+
+
     }
 
 

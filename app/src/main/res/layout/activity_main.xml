@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btndx2"
+        android:id="@+id/btnFavorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
@@ -29,7 +29,7 @@
         app:useCompatPadding="false" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnsx2"
+        android:id="@+id/btnShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@android:color/holo_orange_light"
-        app:srcCompat="@drawable/ic_like"
+        app:srcCompat="@drawable/share"
         app:useCompatPadding="false" />
 
     <LinearLayout
@@ -69,26 +69,24 @@
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/listview"
-        android:layout_width="383dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="-2dp"
+        android:layout_marginBottom="8dp"
         android:paddingTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/btnplay"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"
-        android:layout_height="42dp"
+        android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -101,21 +99,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
-        android:layout_marginTop="2dp"
         android:layout_marginEnd="3dp"
         android:layout_marginRight="3dp"
         android:layout_marginBottom="6dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
-        app:srcCompat="@drawable/butonplay"
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_orange_light"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btndx"
         app:layout_constraintStart_toEndOf="@+id/btnsx"
-        app:layout_constraintTop_toBottomOf="@+id/listview"
-        app:rippleColor="@android:color/holo_red_light" />
+        app:rippleColor="@android:color/holo_red_light"
+        app:srcCompat="@drawable/butonplay" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnsx"
@@ -132,7 +128,7 @@
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_orange_light"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintStart_toEndOf="@+id/btnsx2"
+        app:layout_constraintStart_toEndOf="@+id/btnShare"
         app:rippleColor="@android:color/holo_orange_dark" />
 
     <android.support.design.widget.FloatingActionButton
@@ -150,7 +146,7 @@
         android:visibility="visible"
         app:backgroundTint="@android:color/holo_orange_light"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintEnd_toStartOf="@+id/btndx2"
+        app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
         app:rippleColor="@android:color/holo_orange_dark"
         tools:background="@drawable/next" />
 
