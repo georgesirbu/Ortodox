@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@android:color/holo_red_light"
-        app:srcCompat="@drawable/ic_like"
+        app:srcCompat="@drawable/preferitimenu"
         app:useCompatPadding="false" />
 
     <android.support.design.widget.FloatingActionButton
@@ -173,6 +173,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:visibility="visible"
             tools:targetApi="lollipop" />
 
     </LinearLayout>

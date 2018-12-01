@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/navigation1"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="Info" />
+        android:icon="@drawable/news"
+        android:title="Jurnal" />
 
     <item
         android:id="@+id/navigation2"
