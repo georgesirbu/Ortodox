@@ -46,7 +46,8 @@ public class Personal extends AppCompatActivity {
 
         navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
-       //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
+        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
+        setTitle("Jurnal");
 
     }
 

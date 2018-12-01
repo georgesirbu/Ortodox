@@ -159,7 +159,7 @@ public class Biblioteca extends AppCompatActivity {
         final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
         final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
         final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
-        final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
+        final FloatingActionButton mButtonRemove = findViewById(R.id.btnFavorite);
         final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
 
 
@@ -204,6 +204,8 @@ public class Biblioteca extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.listview);
+
+        barraAudio.setVisibility(View.INVISIBLE);
 
         caricamentoListaAudio();
 
@@ -332,11 +334,56 @@ public class Biblioteca extends AppCompatActivity {
             }
         });
 
-        mButtonFavorite.setOnClickListener(new View.OnClickListener(){
+        mButtonRemove.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
 
 
+                String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+
+                String line = "";
+                String oldFavorites = "";
+
+                //Get the text file
+                File file = new File(dirPath, "favoriteList.lst");
+
+                //Read text from file
+                StringBuilder text = new StringBuilder();
+
+
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+
+                    while ((line = br.readLine()) != null) {
+                        text.append(line);
+                        //text.append('\n');
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    //You'll need to add proper error handling here
+                }
+
+                oldFavorites = text.toString();
+
+                oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
+
+                try {
+
+                    File gpxfile = new File(dirPath, "favoriteList.lst");
+                    FileWriter writer = new FileWriter(gpxfile);
+
+                    writer.append(oldFavorites);//testo
+
+                    writer.flush();
+                    writer.close();
+
+                    Toast.makeText(Biblioteca.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                caricamentoListaAudio();
 
             }
 
@@ -429,6 +476,7 @@ public class Biblioteca extends AppCompatActivity {
                                     progressDialog.dismiss();
                                 }
                                 mPlayer.start();
+                                barraAudio.setVisibility(View.VISIBLE);
                                 // Get the current audio stats
                                 getAudioStats();
                                 // Initialize the seek bar
@@ -447,6 +495,7 @@ public class Biblioteca extends AppCompatActivity {
                         if (mPlayer == null){
                             ultimoLink ="";
                             mButtonPlay.performClick();
+                            barraAudio.setVisibility(View.VISIBLE  );
                         }else
                         {
                             mPlayer.start();
@@ -561,6 +610,10 @@ public class Biblioteca extends AppCompatActivity {
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(Biblioteca.this, R.layout.single_row, R.id.textView, data);
+
+            listView.setAdapter(adapter);
+
+            adapter.notifyDataSetChanged();
 
             listView.setAdapter(adapter);
 

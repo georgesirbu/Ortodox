@@ -119,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout mRootLayout;
     private FloatingActionButton mButtonPlay;
+    private FloatingActionButton mButtonSx ;
+    private FloatingActionButton mButtonDx ;
+    private FloatingActionButton mButtonFavorite;
+    private FloatingActionButton mButtonShare ;
 
     MediaPlayer mPlayer;
 
@@ -139,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView lblRiproduzzione;
 
     public  String[] linksCat;
+    public int positonCat;
 
     public String[] parts;
     public String[] data ;
@@ -209,13 +214,15 @@ public class MainActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
         mButtonPlay = findViewById(R.id.btnplay);
-        final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
-        final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
-        final FloatingActionButton mButtonFavorite = findViewById(R.id.btnFavorite);
-        final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
+        mButtonSx = findViewById(R.id.btnsx);
+        mButtonDx = findViewById(R.id.btndx);
+        mButtonFavorite = findViewById(R.id.btnFavorite);
+        mButtonShare = findViewById(R.id.btnShare);
 
 
         barraAudio = findViewById(R.id.barRiproduzione);
+
+        barraAudio.setVisibility(View.INVISIBLE);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
@@ -223,48 +230,9 @@ public class MainActivity extends AppCompatActivity {
         mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.butonplay);
 
+        //get deep link
+       // getDeepLink();
 
-
-        try {
-            Intent intentDeepLink = getIntent();
-
-            //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
-
-            sharedLink = intentDeepLink.getDataString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
-
-        }
-
-
-        if (sharedLink!=null) {
-
-            try {
-            String[] separazioneSharedLink = sharedLink.split("namestring=");
-            separazioneSharedLink = separazioneSharedLink[1].split(";end;");
-
-
-            if (separazioneSharedLink[0] == "null")
-            {
-                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
-            }else {
-
-                sharedLink = separazioneSharedLink[0];
-                sharedLink = sharedLink.replaceAll("%20", " ");
-
-                //String dta = intnt.getStringExtra("namestring");
-                //dta = dta +"\n"+ intnt.getDataString();
-
-                //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
-            }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
-
-            }
-        }
         // Get the application context
         mContext = getApplicationContext();
         mActivity = MainActivity.this;
@@ -321,6 +289,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
+
+
+
                 mButtonPlay.setImageResource(R.drawable.butonplay);
                 played = false;
 
@@ -329,6 +300,9 @@ public class MainActivity extends AppCompatActivity {
                 positionLink = position;
                 selectedName = data[+position];
                 skiped = false;
+
+                checkFavorite();
+
                 mButtonPlay.performClick();
 
             }
@@ -343,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
+
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
                 String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
@@ -446,16 +421,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
                 String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
 
-                String line="";
-                String oldFavorites="";
+                String line = "";
+                String oldFavorites = "";
 
                 //Get the text file
                 File file = new File(dirPath, "favoriteList.lst");
 
                 //Read text from file
                 StringBuilder text = new StringBuilder();
+
 
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(file));
@@ -465,8 +442,7 @@ public class MainActivity extends AppCompatActivity {
                         //text.append('\n');
                     }
                     br.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     //You'll need to add proper error handling here
                 }
 
@@ -477,27 +453,53 @@ public class MainActivity extends AppCompatActivity {
                     projDir.mkdirs();
                 }
 
-                try {
+                if (checkFavorite() == false) {
 
-                    File gpxfile = new File(dirPath, "favoriteList.lst");
-                    FileWriter writer = new FileWriter(gpxfile);
 
-                    if (oldFavorites.isEmpty())
-                    {
-                        writer.append(selectedName + ">" + selectedLink);
-                    }else
-                        {
-                            writer.append(oldFavorites + ">"+selectedName + ">" + selectedLink);
+                    try {
+
+                        File gpxfile = new File(dirPath, "favoriteList.lst");
+                        FileWriter writer = new FileWriter(gpxfile);
+
+                        if (oldFavorites.isEmpty()) {
+                            writer.append(selectedName + ">" + selectedLink + ">");
+                        } else {
+                            writer.append(oldFavorites + selectedName + ">" + selectedLink + ">");
                         }
 
-                    writer.flush();
-                    writer.close();
+                        writer.flush();
+                        writer.close();
 
-                    Toast.makeText(MainActivity.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }else
+                {
+
+                     oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
+
+                    try {
+
+                        File gpxfile = new File(dirPath, "favoriteList.lst");
+                        FileWriter writer = new FileWriter(gpxfile);
+
+                        writer.append(oldFavorites);//testo
+
+                        writer.flush();
+                        writer.close();
+
+                        Toast.makeText(MainActivity.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
+
+                checkFavorite();
 
             }
         });
@@ -569,6 +571,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (progressDialog != null && progressDialog.isShowing()){
                                     progressDialog.dismiss();
                                 }
+                                barraAudio.setVisibility(View.VISIBLE);
                                 mPlayer.start();
                                 // Get the current audio stats
                                 getAudioStats();
@@ -589,9 +592,10 @@ public class MainActivity extends AppCompatActivity {
                             ultimoLink ="";
                             mButtonPlay.performClick();
                         }else
-                            {
-                                mPlayer.start();
-                            }
+                        {
+                            mPlayer.start();
+                            barraAudio.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -615,12 +619,120 @@ public class MainActivity extends AppCompatActivity {
             caricamentoListaAudio();
         }
 
+        idAudioRilevato = -1;
+
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
+        if (connected){
+
+            getDeepLink();
+
+            if(sharedLink!=null)
+            {
+                //caricamentoListaAudio();
+            }
+        }
+
+    }
+
+    public void getDeepLink()
+    {
+
+        //try {
+            Intent intentDeepLink = getIntent();
+            //Uri uri = intentDeepLink.getData();
+            //String namestring = uri.getQueryParameter("namestring");
+            //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+
+            sharedLink = intentDeepLink.getDataString();
+       // } catch (Exception e) {
+         //   e.printStackTrace();
+            //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+        //}
+
+
+        if (sharedLink!=null) {
+
+            try {
+                String[] separazioneSharedLink = sharedLink.split("namestring=");
+                separazioneSharedLink = separazioneSharedLink[1].split(";end;");
+
+
+                if (separazioneSharedLink[0] == "null")
+                {
+                    //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                }else {
+
+                    sharedLink = separazioneSharedLink[0];
+                    sharedLink = sharedLink.replaceAll("%20", " ");
+
+                    //String dta = intnt.getStringExtra("namestring");
+                    //dta = dta +"\n"+ intnt.getDataString();
+
+                    //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+
+            }
+        }
+
+    }
+
+    public boolean checkFavorite()
+    {
+
+        if(selectedLink != "") {
+
+            Boolean rest;
+
+            String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+
+            String line = "";
+            String oldFavorites = "";
+
+            //Get the text file
+            File file = new File(dirPath, "favoriteList.lst");
+
+            //Read text from file
+            StringBuilder text = new StringBuilder();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    //text.append('\n');
+                }
+                br.close();
+            } catch (IOException e) {
+                //You'll need to add proper error handling here
+            }
+
+            oldFavorites = text.toString();
+
+            if (oldFavorites.toLowerCase().contains(selectedLink.toLowerCase())) {
+
+                mButtonFavorite.setImageResource(R.drawable.like);
+                rest = true;
+
+            } else {
+                mButtonFavorite.setImageResource(R.drawable.preferitimenu);
+                rest = false;
+            }
+
+            return rest;
+        }else
+            {
+                return false;
+            }
 
     }
 
@@ -654,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void caricamentoListaAudio()
     {
-        listaMedia= "";
+
 
         //if (isNetworkConnected()) {
         ReadFileTask tsk = new ReadFileTask();
@@ -749,6 +861,8 @@ public class MainActivity extends AppCompatActivity {
             if (sharedLink!=null)
             {
 
+                Toast.makeText(MainActivity.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
+
                 try {
                     mPlayer.stop();
                     if(mHandler!=null){
@@ -771,33 +885,51 @@ public class MainActivity extends AppCompatActivity {
                 //mButtonPlay.setImageResource(R.drawable.butonplay);
                 played = false;
 
+                   for (int i = 0; i < links.length; i++) {
+                       String thisString = links[i];
 
-                for(int i = 0; i < links.length; i++){
-                    String thisString = links[i];
+                       if (thisString.equals(sharedLink)) {
+                           idAudioRilevato = i;
+                           break;
+                       }
+                   }
 
-                     if(thisString.equals(sharedLink)){
-                        idAudioRilevato = i;
-                    }
-                }
+                   if (idAudioRilevato > (-1)) {
 
-                selectedLink = links[+idAudioRilevato];
-                positionLink = idAudioRilevato;
-                selectedName = data[+idAudioRilevato];
-                skiped = false;
+                       selectedLink = links[+idAudioRilevato];
+                       positionLink = idAudioRilevato;
+                       selectedName = data[+idAudioRilevato];
+                       skiped = false;
 
-                //mButtonPlay.performClick();
+                       //mButtonPlay.performClick();
 
-                mButtonPlay.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        mButtonPlay.performClick();
-                    }
-                });
+                       mButtonPlay.post(new Runnable() {
+                           @Override
+                           public void run() {
+                               mButtonPlay.performClick();
+                           }
+                       });
 
-                sharedLink = null;
+                       sharedLink = null;
+
+                   } else {
+
+                       try{
+                           positonCat = positonCat + 1;
+                           linkListaMedia = linksCat[positonCat];
+                           caricamentoListaAudio();
+                       } catch (Exception e) {
+                           e.printStackTrace();
+                           Toast.makeText(MainActivity.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                           sharedLink = null;
+
+                       }
+                   }
+
 
             }
 
+            listaMedia= "";
 
         }
 
@@ -847,7 +979,7 @@ public class MainActivity extends AppCompatActivity {
             fineHTTP2 = 1;
 
             while(fineHTTP2==0) {
-                Log.d("LISTA CATEGORIE: ", listaCategorie);
+                //Log.d("LISTA CATEGORIE: ", listaCategorie);
             }
 
             String[] categories = listaCategorie.split(">");
@@ -931,6 +1063,7 @@ public class MainActivity extends AppCompatActivity {
                     categoriaName = horizontalGrocderyList.get(position).getProductName().toString();
                     //Toast.makeText(context, productName + " is selected " + position, Toast.LENGTH_SHORT).show();
 
+                    positonCat = position;
                     linkListaMedia = linksCat[position];
                     caricamentoListaAudio();
 
