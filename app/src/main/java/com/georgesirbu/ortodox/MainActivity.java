@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -219,19 +218,20 @@ public class MainActivity extends AppCompatActivity {
         mButtonFavorite = findViewById(R.id.btnFavorite);
         mButtonShare = findViewById(R.id.btnShare);
 
-
         barraAudio = findViewById(R.id.barRiproduzione);
 
         barraAudio.setVisibility(View.INVISIBLE);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
-        mButtonSx.setImageResource(R.drawable.butoninapoi);
-        mButtonDx.setImageResource(R.drawable.butoninainte);
-        mButtonPlay.setImageResource(R.drawable.butonplay);
+        mButtonSx.setImageResource(R.drawable.inapoidefault);
+        mButtonDx.setImageResource(R.drawable.inaintedefault);
+        mButtonPlay.setImageResource(R.drawable.playdefault);
+
+        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
 
         //get deep link
-       // getDeepLink();
+        //getDeepLink();
 
         // Get the application context
         mContext = getApplicationContext();
@@ -292,7 +292,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                mButtonPlay.setImageResource(R.drawable.butonplay);
+                mButtonPlay.setImageResource(R.drawable.playdefault);
+                //mButtonPlay.setImageResource(R.drawable.playdefault);
+                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+
                 played = false;
 
 
@@ -479,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
                 }else
                 {
 
-                     oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
+                    oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
 
                     try {
 
@@ -578,6 +581,9 @@ public class MainActivity extends AppCompatActivity {
                                 // Initialize the seek bar
                                 initializeSeekBar();
                                 mButtonPlay.setImageResource(R.drawable.butonpausa);
+                                //mButtonPlay.setImageResource(R.drawable.playdefault);
+                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
@@ -600,6 +606,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     mButtonPlay.setImageResource(R.drawable.butonpausa);
+                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -607,7 +616,10 @@ public class MainActivity extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.butonplay);
+                    mButtonPlay.setImageResource(R.drawable.playdefault);
+                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                     played = false;
                     skiped = false;
                 }
@@ -643,15 +655,15 @@ public class MainActivity extends AppCompatActivity {
     {
 
         //try {
-            Intent intentDeepLink = getIntent();
-            //Uri uri = intentDeepLink.getData();
-            //String namestring = uri.getQueryParameter("namestring");
-            //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+        Intent intentDeepLink = getIntent();
+        //Uri uri = intentDeepLink.getData();
+        //String namestring = uri.getQueryParameter("namestring");
+        //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
 
-            sharedLink = intentDeepLink.getDataString();
-       // } catch (Exception e) {
-         //   e.printStackTrace();
-            //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+        sharedLink = intentDeepLink.getDataString();
+        // } catch (Exception e) {
+        //   e.printStackTrace();
+        //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
 
         //}
 
@@ -730,9 +742,9 @@ public class MainActivity extends AppCompatActivity {
 
             return rest;
         }else
-            {
-                return false;
-            }
+        {
+            return false;
+        }
 
     }
 
@@ -885,46 +897,46 @@ public class MainActivity extends AppCompatActivity {
                 //mButtonPlay.setImageResource(R.drawable.butonplay);
                 played = false;
 
-                   for (int i = 0; i < links.length; i++) {
-                       String thisString = links[i];
+                for (int i = 0; i < links.length; i++) {
+                    String thisString = links[i];
 
-                       if (thisString.equals(sharedLink)) {
-                           idAudioRilevato = i;
-                           break;
-                       }
-                   }
+                    if (thisString.equals(sharedLink)) {
+                        idAudioRilevato = i;
+                        break;
+                    }
+                }
 
-                   if (idAudioRilevato > (-1)) {
+                if (idAudioRilevato > (-1)) {
 
-                       selectedLink = links[+idAudioRilevato];
-                       positionLink = idAudioRilevato;
-                       selectedName = data[+idAudioRilevato];
-                       skiped = false;
+                    selectedLink = links[+idAudioRilevato];
+                    positionLink = idAudioRilevato;
+                    selectedName = data[+idAudioRilevato];
+                    skiped = false;
 
-                       //mButtonPlay.performClick();
+                    //mButtonPlay.performClick();
 
-                       mButtonPlay.post(new Runnable() {
-                           @Override
-                           public void run() {
-                               mButtonPlay.performClick();
-                           }
-                       });
+                    mButtonPlay.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mButtonPlay.performClick();
+                        }
+                    });
 
-                       sharedLink = null;
+                    sharedLink = null;
 
-                   } else {
+                } else {
 
-                       try{
-                           positonCat = positonCat + 1;
-                           linkListaMedia = linksCat[positonCat];
-                           caricamentoListaAudio();
-                       } catch (Exception e) {
-                           e.printStackTrace();
-                           Toast.makeText(MainActivity.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
-                           sharedLink = null;
+                    try{
+                        positonCat = positonCat + 1;
+                        linkListaMedia = linksCat[positonCat];
+                        caricamentoListaAudio();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                        sharedLink = null;
 
-                       }
-                   }
+                    }
+                }
 
 
             }
