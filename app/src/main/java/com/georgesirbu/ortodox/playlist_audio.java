@@ -184,10 +184,10 @@ public class playlist_audio extends AppCompatActivity {
 
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, getString(R.string.idPubblicita));
+        MobileAds.initialize(this, getString(R.string.adMobID));
 
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.idPubblicita));
+        mInterstitialAd.setAdUnitId(getString(R.string.adMobUnitID));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
@@ -586,8 +586,7 @@ public class playlist_audio extends AppCompatActivity {
                                             Log.d("TAG", "The interstitial wasn't loaded yet.");
                                         }
 
-
-
+                                        
 
                                         mButtonDx.performClick();
                                     }

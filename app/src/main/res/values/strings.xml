@@ -13,6 +13,7 @@
     <string name="todo">TODO</string>
     <string name="Nome_Riproduzione" />
 
-    <string name="idPubblicita">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="adMobID">ca-app-pub-6428285541464966~7564362778</string>
+    <string name="adMobUnitID">ca-app-pub-6428285541464966/8657952595</string>
 
 </resources>
