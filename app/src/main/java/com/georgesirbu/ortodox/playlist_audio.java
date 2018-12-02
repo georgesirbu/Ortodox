@@ -1012,7 +1012,7 @@ public class playlist_audio extends AppCompatActivity {
             for (int i=0; i<sizeCat; i++)
             {
 
-                Grocery categorie = new Grocery(dataCat[i], R.drawable.playlist);
+                Grocery categorie = new Grocery(dataCat[i], R.drawable.church);
                 groceryList.add(categorie);
 
             }
