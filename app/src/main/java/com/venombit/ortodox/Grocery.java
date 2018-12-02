@@ -1,4 +1,4 @@
-package com.georgesirbu.ortodox;
+package com.venombit.ortodox;
 
 public class Grocery {
     public int productImage;

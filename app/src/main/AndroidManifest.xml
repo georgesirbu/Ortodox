@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.georgesirbu.ortodox">
+    package="com.venombit.ortodox">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,9 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".playlist_audio"
+            android:name="com.venombit.ortodox.playlist_audio"
             android:label="Ortodox"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
 
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,15 +40,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".jurnal"
-            android:label="Jurnal" />
+            android:name="com.venombit.ortodox.jurnal"
+            android:label="Jurnal"
+            android:screenOrientation="portrait"
+            />
         <activity
-            android:name=".radio"
-            android:label="Radio" />
+            android:name="com.venombit.ortodox.radio"
+            android:label="Radio"
+            android:screenOrientation="portrait"
+            />
         <activity
-            android:name=".playlist_preferiti"
-            android:label="Preferite" />
-        <activity android:name=".networkState"></activity>
+            android:name="com.venombit.ortodox.playlist_preferiti"
+            android:label="Preferite"
+            android:screenOrientation="portrait"
+            />
+        <activity
+            android:name="com.venombit.ortodox.networkState"
+            android:screenOrientation="portrait"
+            />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

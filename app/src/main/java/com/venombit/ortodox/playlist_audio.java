@@ -1,10 +1,10 @@
-package com.georgesirbu.ortodox;
+package com.venombit.ortodox;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +62,7 @@ public class playlist_audio extends AppCompatActivity {
     View updateview;// above oncreate method
 
     //TODO: RESOLVE THIS SHIT EMI
-    public String linkListaMedia = webhosting + webListe +"acatiste.lst";
+    public String linkListaMedia = webhosting + webListe +"colinde.lst";
 
     public String listaCategorie="";
 
@@ -72,10 +73,10 @@ public class playlist_audio extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 //case R.id.navAudio:
-                    //destroymPlayer();
-                    //startActivity(new Intent(playlist_audio.this, playlist_audio.class));
-                    //finish();
-                    //return true;
+                //destroymPlayer();
+                //startActivity(new Intent(playlist_audio.this, playlist_audio.class));
+                //finish();
+                //return true;
                 case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, jurnal.class));
@@ -182,6 +183,21 @@ public class playlist_audio extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
+        // The request code used in ActivityCompat.requestPermissions()
+// and returned in the Activity's onRequestPermissionsResult()
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.CAMERA
+        };
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, getString(R.string.adMobID));
@@ -207,9 +223,7 @@ public class playlist_audio extends AppCompatActivity {
         setTitle("Audio");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
-        //navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
         navigation.getMenu().findItem(R.id.navAudio).setChecked(true);
-        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
 
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
 
@@ -861,37 +875,41 @@ public class playlist_audio extends AppCompatActivity {
 
             fineHTTP = 1;
 
-            parts = listaMedia.split(">");
+            if (listaMedia != "") {
 
-            int size = parts.length;
-            data = new String[size/2];
-            links = new String[size/2];
+                parts = listaMedia.split(">");
 
-            int n = 0;
-            int l = 0;
+                int size = parts.length;
+                data = new String[size / 2];
+                links = new String[size / 2];
 
-            for (int i=0; i<size; i++) {
+                int n = 0;
+                int l = 0;
 
-                int p = 2;
+                for (int i = 0; i < size; i++) {
 
-                int resto = i % p;
+                    int p = 2;
 
-                if (resto == 0) {
-                    data[n] = parts[i];
-                    n++;
-                } else {
-                    links[l] = parts[i];
-                    l++;
+                    int resto = i % p;
+
+                    if (resto == 0) {
+                        data[n] = parts[i];
+                        n++;
+                    } else {
+                        links[l] = parts[i];
+                        l++;
+                    }
+
                 }
 
             }
-
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter=new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
 
             listView.setAdapter(adapter);
 
             fineHTTP = 0;
+
 
             //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
@@ -957,7 +975,7 @@ public class playlist_audio extends AppCompatActivity {
                         caricamentoListaAudio();
                     } catch (Exception e) {
                         e.printStackTrace();
-                       // Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                        // Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
                         sharedLink = null;
 
                     }
@@ -1066,10 +1084,17 @@ public class playlist_audio extends AppCompatActivity {
             fineHTTP2 = 1;
         }
 
+    }
 
-
-
-
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

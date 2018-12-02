@@ -1,4 +1,4 @@
-package com.georgesirbu.ortodox;
+package com.venombit.ortodox;
 
 import org.junit.Test;
 

@@ -1,11 +1,12 @@
-package com.georgesirbu.ortodox;
+package com.venombit.ortodox;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,38 +14,23 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class playlist_preferiti extends AppCompatActivity {
+public class radio extends AppCompatActivity {
 
-    public String webhosting = "http://venombit.com";
-    public String webCategorii = "/Ortodox/categorii/";
-    public String webListe = "/Ortodox/liste/";
-    public String webMedia = "";
-    public String listaMedia="";
-    public String linkListaMedia = webhosting + webListe +"acatiste.lst";
-
-    public String listaCategorie="";
+    private TextView mTextMessage;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,60 +40,40 @@ public class playlist_preferiti extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navAudio:
                     destroymPlayer();
-                    startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
+                    startActivity(new Intent(radio.this, playlist_audio.class));
                     finish();
                     return true;
                 case R.id.navJurnal:
                     destroymPlayer();
-                    startActivity(new Intent(playlist_preferiti.this, jurnal.class));
+                    startActivity(new Intent(radio.this, jurnal.class));
                     finish();
                     return true;
-                //case R.id.navFavorite:
+                case R.id.navFavorite:
+                    destroymPlayer();
+                    startActivity(new Intent(radio.this, playlist_preferiti.class));
+                    finish();
+                    return true;
+                //case R.id.navRadio:
                     //destroymPlayer();
-                    //startActivity(new Intent(playlist_preferiti.this, playlist_preferiti.class));
+                    //startActivity(new Intent(radio.this, radio.class));
                     //finish();
                     //return true;
-                case R.id.navRadio:
-                    destroymPlayer();
-                    startActivity(new Intent(playlist_preferiti.this, radio.class));
-                    finish();
-                    return true;
             }
             return false;
         }
     };
 
-    private void destroymPlayer()
-    {
-        try {
-            mPlayer.stop();
-            if(mHandler!=null){
-                mHandler.removeCallbacks(mRunnable);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public String webhosting = "http://venombit.com";
+    public String webListe = "/Ortodox/liste/";
 
-        if (mPlayer != null) {
-            mPlayer.reset();
-            mPlayer.release();
-            mPlayer = null;
-        }else
-        {
+    public String listaMedia="";
 
-        }
-    }
-
-    private Context mContext;
-    private Activity mActivity;
-
-    private LinearLayout mRootLayout;
-    private Button mButtonPlay;
+    //TODO: RESOLVE THIS SHIT EMI
+    public String linkListaMedia = webhosting + webListe +"radio.lst";
 
     MediaPlayer mPlayer;
 
     Boolean played = false;
-
     String selectedLink = "";
     String selectedName = "";
     int positionLink;
@@ -115,118 +81,77 @@ public class playlist_preferiti extends AppCompatActivity {
     int fineHTTP = 0;
     int fineHTTP2 = 0;
 
-    private SeekBar barraAudio;
     private TextView lblRiproduzzione;
-
-    public  String[] linksCat;
 
     public String[] parts;
     public String[] data ;
     public String[] links ;
-    public String[] favoritesData;
-    public String[] favoritesLinks;
-
-    public ListView listView;
 
     public String  ultimoLink;
-
-    public int listCount;
 
     public  boolean skiped = false;
 
     public String audioUrl;
 
-    public  String categoriaName;
+    public ListView listView;
+
+    public int listCount;
+
+    private FloatingActionButton mButtonPlay;
+    private FloatingActionButton mButtonSx ;
+    private FloatingActionButton mButtonDx ;
+
     private Handler mHandler;
     private Runnable mRunnable;
 
-    private InterstitialAd mInterstitialAd;
+    boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preferiti);
+        setContentView(R.layout.activity_radio);
 
+        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        setTitle("Favorite");
-        //getActionBar().setIcon(R.drawable.preferitimenu);
+        navigation.getMenu().findItem(R.id.navRadio).setChecked(true);
 
+        setTitle("Radio");
 
-        navigation.getMenu().findItem(R.id.navFavorite).setChecked(true);
-
-
-
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, getString(R.string.adMobID));
-
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.adMobUnitID));
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-
-
-
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+            startActivity(new Intent(radio.this, networkState.class));
+            finish();
+        }
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
-        final FloatingActionButton mButtonPlay = findViewById(R.id.btnplay);
-        final FloatingActionButton mButtonSx = findViewById(R.id.btnsx);
-        final FloatingActionButton mButtonDx = findViewById(R.id.btndx);
-        final FloatingActionButton mButtonRemove = findViewById(R.id.btnFavorite);
-        final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
+        mButtonPlay = findViewById(R.id.btnplay);
+        mButtonSx = findViewById(R.id.btnsx2);
+        mButtonDx = findViewById(R.id.btndx2);
 
-        barraAudio = findViewById(R.id.barRiproduzione);
+        mButtonSx.setImageResource(R.drawable.inapoidefault);
+        mButtonDx.setImageResource(R.drawable.inaintedefault);
+        mButtonPlay.setImageResource(R.drawable.playdefault);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
-
-        mButtonSx.setImageResource(R.drawable.butoninapoi);
-        mButtonDx.setImageResource(R.drawable.butoninainte);
-        mButtonPlay.setImageResource(R.drawable.butonplay);
-
-
-        // Get the application context
-        mContext = getApplicationContext();
-        mActivity = playlist_preferiti.this;
 
         // Initialize the handler
         mHandler = new Handler();
 
-        // Set a change listener for seek bar
-        barraAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar barraAudio, int i, boolean b) {
-                if(mPlayer!=null && b){
-
-                    mPlayer.seekTo(i*1000);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar barraAudio) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar barraAudio) {
-
-            }
-
-        });
-
         listView = findViewById(R.id.listview);
-
-        barraAudio.setVisibility(View.INVISIBLE);
-
-        caricamentoListaAudio();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
 
                 try {
                     mPlayer.stop();
@@ -246,13 +171,20 @@ public class playlist_preferiti extends AppCompatActivity {
 
                 }
 
-                mButtonPlay.setImageResource(R.drawable.butonplay);
+                mButtonPlay.setImageResource(R.drawable.playdefault);
+                //mButtonPlay.setImageResource(R.drawable.playdefault);
+                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+
                 played = false;
+
 
                 selectedLink = links[+position];
                 positionLink = position;
                 selectedName = data[+position];
                 skiped = false;
+
+                //checkFavorite();
+
                 mButtonPlay.performClick();
 
             }
@@ -348,84 +280,6 @@ public class playlist_preferiti extends AppCompatActivity {
             }
         });
 
-        mButtonRemove.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
-
-                String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
-
-                String line = "";
-                String oldFavorites = "";
-
-                //Get the text file
-                File file = new File(dirPath, "favoriteList.lst");
-
-                //Read text from file
-                StringBuilder text = new StringBuilder();
-
-
-                try {
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-
-                    while ((line = br.readLine()) != null) {
-                        text.append(line);
-                        //text.append('\n');
-                    }
-                    br.close();
-                } catch (IOException e) {
-                    //You'll need to add proper error handling here
-                }
-
-                oldFavorites = text.toString();
-
-                oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
-
-                try {
-
-                    File gpxfile = new File(dirPath, "favoriteList.lst");
-                    FileWriter writer = new FileWriter(gpxfile);
-
-                    writer.append(oldFavorites);//testo
-
-                    writer.flush();
-                    writer.close();
-
-                    Toast.makeText(playlist_preferiti.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                caricamentoListaAudio();
-
-                listView.invalidateViews();
-
-            }
-
-        });
-
-        mButtonShare.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
-                String linkToShare = selectedLink;
-                linkToShare = linkToShare.replaceAll(" ", "%20");
-
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-
-                //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
-                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
-
-            }
-
-        });
-
-
         mButtonPlay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -442,7 +296,7 @@ public class playlist_preferiti extends AppCompatActivity {
                             protected void onPreExecute() {
                                 // do pre execute stuff...
                                 skiped = false;
-                                progressDialog.setTitle(categoriaName);
+                                progressDialog.setTitle("Radio");
                                 progressDialog.setMessage("Se incarca...");
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.setCancelable(false);
@@ -482,17 +336,7 @@ public class playlist_preferiti extends AppCompatActivity {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
-
-                                        //PUBLICITA
-
-                                        if (mInterstitialAd.isLoaded()) {
-                                            mInterstitialAd.show();
-                                        } else {
-                                            Log.d("TAG", "The interstitial wasn't loaded yet.");
-                                        }
-
-
-                                        mButtonDx.performClick();
+                                        //mButtonSx.performClick();
                                     }
                                 });
                                 return "";
@@ -502,13 +346,16 @@ public class playlist_preferiti extends AppCompatActivity {
                                 if (progressDialog != null && progressDialog.isShowing()){
                                     progressDialog.dismiss();
                                 }
+                                //barraAudio.setVisibility(View.VISIBLE);
                                 mPlayer.start();
-                                barraAudio.setVisibility(View.VISIBLE);
                                 // Get the current audio stats
                                 getAudioStats();
                                 // Initialize the seek bar
-                                initializeSeekBar();
+                                //initializeSeekBar();
                                 mButtonPlay.setImageResource(R.drawable.butonpausa);
+                                //mButtonPlay.setImageResource(R.drawable.playdefault);
+                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
@@ -522,15 +369,18 @@ public class playlist_preferiti extends AppCompatActivity {
                         if (mPlayer == null){
                             ultimoLink ="";
                             mButtonPlay.performClick();
-                            barraAudio.setVisibility(View.VISIBLE  );
                         }else
                         {
                             mPlayer.start();
+                            //barraAudio.setVisibility(View.VISIBLE);
                         }
 
                     }
 
                     mButtonPlay.setImageResource(R.drawable.butonpausa);
+                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -538,7 +388,10 @@ public class playlist_preferiti extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.butonplay);
+                    mButtonPlay.setImageResource(R.drawable.playdefault);
+                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                     played = false;
                     skiped = false;
                 }
@@ -546,23 +399,31 @@ public class playlist_preferiti extends AppCompatActivity {
             }
         });
 
+        if (connected) {
+            caricamentoListaAudio();
+        }
+
     }
 
-    protected void initializeSeekBar(){
-        barraAudio.setMax(mPlayer.getDuration()/1000);
-
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if(mPlayer!=null){
-                    int mCurrentPosition = mPlayer.getCurrentPosition()/1000; // In milliseconds
-                    barraAudio.setProgress(mCurrentPosition);
-                    getAudioStats();
-                }
-                mHandler.postDelayed(mRunnable,1000);
+    private void destroymPlayer()
+    {
+        try {
+            mPlayer.stop();
+            if(mHandler!=null){
+                mHandler.removeCallbacks(mRunnable);
             }
-        };
-        mHandler.postDelayed(mRunnable,1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlayer.release();
+            mPlayer = null;
+        }else
+        {
+
+        }
     }
 
     protected void getAudioStats(){
@@ -578,48 +439,62 @@ public class playlist_preferiti extends AppCompatActivity {
 
     public void caricamentoListaAudio()
     {
-        listaMedia= "";
+
 
         //if (isNetworkConnected()) {
+        ReadAudioList tsk = new ReadAudioList();
+        tsk.execute(linkListaMedia);
 
-        String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+    }
 
-        String line="";
+    private class ReadAudioList extends AsyncTask<String,Integer,String> {
 
+        protected String doInBackground(String... params) {
+            URL url;
+            try {
+                //create url object to point to the file location on internet
+                url = new URL(params[0]);
+                //make a request to server
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                //get InputStream instance
+                InputStream is = con.getInputStream();
+                //create BufferedReader object
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                //read content of the file line by line
+                while ((line = br.readLine()) != null) {
+                    listaMedia += line;
 
-        //Get the text file
-        File file = new File(dirPath, "favoriteList.lst");
+                }
 
-        //Read text from file
-        StringBuilder text = new StringBuilder();
+                br.close();
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                //text.append('\n');
+            } catch (Exception e) {
+                e.printStackTrace();
+                //close dialog if error occurs
             }
-            br.close();
-        }
-        catch (IOException e) {
-            //You'll need to add proper error handling here
+
+            fineHTTP = 1;
+            return "Ok";
+
         }
 
-        listaMedia = text.toString();
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
 
-        if (!listaMedia.isEmpty()) {
+            fineHTTP = 1;
 
             parts = listaMedia.split(">");
 
             int size = parts.length;
-            data = new String[size / 2];
-            links = new String[size / 2];
+            data = new String[size/2];
+            links = new String[size/2];
 
             int n = 0;
             int l = 0;
 
-            for (int i = 0; i < size; i++) {
+            for (int i=0; i<size; i++) {
 
                 int p = 2;
 
@@ -636,28 +511,24 @@ public class playlist_preferiti extends AppCompatActivity {
             }
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row, R.id.textView, data);
 
             listView.setAdapter(adapter);
 
+            fineHTTP = 0;
 
-            adapter.notifyDataSetChanged();
+            //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
-            listView.setAdapter(adapter);
+            listaMedia= "";
 
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
+            fineHTTP = 1;
         }
     }
 
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        fineHTTP = 1;
-    }
-
-
 }
-
-
-
-
