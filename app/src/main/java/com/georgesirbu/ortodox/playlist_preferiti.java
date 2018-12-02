@@ -159,8 +159,6 @@ public class playlist_preferiti extends AppCompatActivity {
         final FloatingActionButton mButtonRemove = findViewById(R.id.btnFavorite);
         final FloatingActionButton mButtonShare = findViewById(R.id.btnShare);
 
-
-
         barraAudio = findViewById(R.id.barRiproduzione);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
@@ -382,6 +380,8 @@ public class playlist_preferiti extends AppCompatActivity {
                 }
 
                 caricamentoListaAudio();
+
+                listView.invalidateViews();
 
             }
 
@@ -611,6 +611,7 @@ public class playlist_preferiti extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row, R.id.textView, data);
 
             listView.setAdapter(adapter);
+
 
             adapter.notifyDataSetChanged();
 
