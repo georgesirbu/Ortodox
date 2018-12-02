@@ -898,7 +898,7 @@ public class playlist_audio extends AppCompatActivity {
             if (sharedLink!=null)
             {
 
-                Toast.makeText(playlist_audio.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
+                //Toast.makeText(playlist_audio.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
 
                 try {
                     mPlayer.stop();
@@ -957,7 +957,7 @@ public class playlist_audio extends AppCompatActivity {
                         caricamentoListaAudio();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
                         sharedLink = null;
 
                     }
