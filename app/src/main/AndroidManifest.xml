@@ -15,8 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:name=".playlist_audio"
+            android:label="Audio"
             android:launchMode="singleTask">
 
             <intent-filter>
@@ -39,11 +39,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Personal"
-            android:label="@string/title_activity_personal" />
+            android:name=".jurnal"
+            android:label="Jurnal" />
         <activity
-            android:name=".Biblioteca"
-            android:label="@string/title_activity_biblioteca" />
+            android:name=".radio"
+            android:label="Radio" />
+        <activity
+            android:name=".playlist_preferiti"
+            android:label="Preferite" />
         <activity android:name=".networkState"></activity>
     </application>
 

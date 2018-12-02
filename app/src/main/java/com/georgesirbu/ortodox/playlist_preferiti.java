@@ -13,8 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,14 +29,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Biblioteca extends AppCompatActivity {
+public class playlist_preferiti extends AppCompatActivity {
 
     public String webhosting = "http://venombit.com";
     public String webCategorii = "/Ortodox/categorii/";
@@ -57,17 +49,22 @@ public class Biblioteca extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation2:
                     destroymPlayer();
-                    startActivity(new Intent(Biblioteca.this, MainActivity.class));
+                    startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
                     finish();
                     return true;
                 case R.id.navigation1:
                     destroymPlayer();
-                    startActivity(new Intent(Biblioteca.this, Personal.class));
+                    startActivity(new Intent(playlist_preferiti.this, jurnal.class));
                     finish();
                     return true;
                 case R.id.navigation3:
+                    //destroymPlayer();
+                    //startActivity(new Intent(playlist_preferiti.this, playlist_preferiti.class));
+                    //finish();
+                    //return true;
+                case R.id.navigation4:
                     destroymPlayer();
-                    startActivity(new Intent(Biblioteca.this, Biblioteca.class));
+                    startActivity(new Intent(playlist_preferiti.this, radio.class));
                     finish();
                     return true;
             }
@@ -142,7 +139,7 @@ public class Biblioteca extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_biblioteca);
+        setContentView(R.layout.activity_preferiti);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -175,7 +172,7 @@ public class Biblioteca extends AppCompatActivity {
 
         // Get the application context
         mContext = getApplicationContext();
-        mActivity = Biblioteca.this;
+        mActivity = playlist_preferiti.this;
 
         // Initialize the handler
         mHandler = new Handler();
@@ -377,7 +374,7 @@ public class Biblioteca extends AppCompatActivity {
                     writer.flush();
                     writer.close();
 
-                    Toast.makeText(Biblioteca.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(playlist_preferiti.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -398,6 +395,7 @@ public class Biblioteca extends AppCompatActivity {
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
+
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
                 String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
@@ -609,7 +607,7 @@ public class Biblioteca extends AppCompatActivity {
             }
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Biblioteca.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row, R.id.textView, data);
 
             listView.setAdapter(adapter);
 
