@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -51,6 +52,8 @@ public class playlist_audio extends AppCompatActivity {
     public String webListe = "/Ortodox/liste/";
     public String webMedia = "";
     public String listaMedia="";
+
+    View previousSelectedItem;
 
     //TODO: RESOLVE THIS SHIT EMI
     public String linkListaMedia = webhosting + webListe +"acatiste.lst";
@@ -150,7 +153,7 @@ public class playlist_audio extends AppCompatActivity {
 
     public int listCount;
 
-    public  boolean skiped = false;
+    public boolean skiped = false;
 
     public String audioUrl;
 
@@ -195,7 +198,6 @@ public class playlist_audio extends AppCompatActivity {
         // add a divider after each item for more clarity
         groceryRecyclerView.addItemDecoration(new DividerItemDecoration(playlist_audio.this, LinearLayoutManager.HORIZONTAL));
         groceryAdapter = new RecyclerViewHorizontalListAdapter(groceryList, getApplicationContext());
-
 
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(playlist_audio.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
@@ -288,7 +290,7 @@ public class playlist_audio extends AppCompatActivity {
                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
 
                 played = false;
-
+                
 
                 selectedLink = links[+position];
                 positionLink = position;
@@ -574,6 +576,8 @@ public class playlist_audio extends AppCompatActivity {
                                 mButtonPlay.setImageResource(R.drawable.butonpausa);
                                 //mButtonPlay.setImageResource(R.drawable.playdefault);
                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                                //listView.getChildAt(positionLink).setBackgroundColor(Color.CYAN);
 
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
