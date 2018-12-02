@@ -47,22 +47,22 @@ public class playlist_preferiti extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation2:
+                case R.id.navAudio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
                     finish();
                     return true;
-                case R.id.navigation1:
+                case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, jurnal.class));
                     finish();
                     return true;
-                case R.id.navigation3:
+                //case R.id.navFavorite:
                     //destroymPlayer();
                     //startActivity(new Intent(playlist_preferiti.this, playlist_preferiti.class));
                     //finish();
                     //return true;
-                case R.id.navigation4:
+                case R.id.navRadio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, radio.class));
                     finish();
@@ -149,7 +149,7 @@ public class playlist_preferiti extends AppCompatActivity {
 
         //navigation.getMenu().findItem(R.id.navigation1).setChecked(false);
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(false);
-        navigation.getMenu().findItem(R.id.navigation3).setChecked(true);
+        navigation.getMenu().findItem(R.id.navFavorite).setChecked(true);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -210,6 +210,7 @@ public class playlist_preferiti extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
                 try {
                     mPlayer.stop();
@@ -463,7 +464,7 @@ public class playlist_preferiti extends AppCompatActivity {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
-                                        mButtonSx.performClick();
+                                        mButtonDx.performClick();
                                     }
                                 });
                                 return "";

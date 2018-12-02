@@ -39,22 +39,22 @@ public class radio extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation2:
+                case R.id.navAudio:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, playlist_audio.class));
                     finish();
                     return true;
-                case R.id.navigation1:
+                case R.id.navJurnal:
                     destroymPlayer();
-                    startActivity(new Intent(radio.this, radio.class));
+                    startActivity(new Intent(radio.this, jurnal.class));
                     finish();
                     return true;
-                case R.id.navigation3:
+                case R.id.navFavorite:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, playlist_preferiti.class));
                     finish();
                     return true;
-                case R.id.navigation4:
+                //case R.id.navRadio:
                     //destroymPlayer();
                     //startActivity(new Intent(radio.this, radio.class));
                     //finish();
@@ -116,7 +116,7 @@ public class radio extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        navigation.getMenu().findItem(R.id.navigation4).setChecked(true);
+        navigation.getMenu().findItem(R.id.navRadio).setChecked(true);
 
         setTitle("Radio");
 

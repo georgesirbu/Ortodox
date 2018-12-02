@@ -63,22 +63,22 @@ public class playlist_audio extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation2:
+                //case R.id.navAudio:
                     //destroymPlayer();
                     //startActivity(new Intent(playlist_audio.this, playlist_audio.class));
                     //finish();
                     //return true;
-                case R.id.navigation1:
+                case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, jurnal.class));
                     finish();
                     return true;
-                case R.id.navigation3:
+                case R.id.navFavorite:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, playlist_preferiti.class));
                     finish();
                     return true;
-                case R.id.navigation4:
+                case R.id.navRadio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, radio.class));
                     finish();
@@ -88,7 +88,7 @@ public class playlist_audio extends AppCompatActivity {
         }
     };
 
-    private void destroymPlayer()
+    public void destroymPlayer()
     {
         try {
             mPlayer.stop();
@@ -119,7 +119,7 @@ public class playlist_audio extends AppCompatActivity {
     private FloatingActionButton mButtonFavorite;
     private FloatingActionButton mButtonShare ;
 
-    MediaPlayer mPlayer;
+    public MediaPlayer mPlayer;
 
     Boolean played = false;
 
@@ -187,7 +187,7 @@ public class playlist_audio extends AppCompatActivity {
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
         //navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
-        navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
+        navigation.getMenu().findItem(R.id.navAudio).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
 
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
@@ -555,7 +555,7 @@ public class playlist_audio extends AppCompatActivity {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
-                                        mButtonSx.performClick();
+                                        mButtonDx.performClick();
                                     }
                                 });
                                 return "";
