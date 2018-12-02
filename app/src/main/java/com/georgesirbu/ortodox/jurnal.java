@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class Personal extends AppCompatActivity {
+public class jurnal extends AppCompatActivity {
 
     private TextView mTextMessage;
 
@@ -19,15 +19,20 @@ public class Personal extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation2:
-                    startActivity(new Intent(Personal.this, MainActivity.class));
+                    startActivity(new Intent(jurnal.this, playlist_audio.class));
                     finish();
                     return true;
                 case R.id.navigation1:
-                    startActivity(new Intent(Personal.this, Personal.class));
+                   //startActivity(new Intent(jurnal.this, jurnal.class));
+                    //finish();
+                    //return true;
+                case R.id.navigation3:
+                    startActivity(new Intent(jurnal.this, playlist_preferiti.class));
                     finish();
                     return true;
-                case R.id.navigation3:
-                    startActivity(new Intent(Personal.this, Biblioteca.class));
+                case R.id.navigation4:
+                    //destroymPlayer();
+                    startActivity(new Intent(jurnal.this, radio.class));
                     finish();
                     return true;
             }
@@ -38,7 +43,7 @@ public class Personal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal);
+        setContentView(R.layout.activity_jurnal);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

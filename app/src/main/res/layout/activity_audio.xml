@@ -5,11 +5,11 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Biblioteca">
-
+    tools:context=".playlist_audio">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnFavorite"
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
@@ -22,31 +22,54 @@
         android:foregroundGravity="center_vertical|center_horizontal"
         android:scaleType="centerInside"
         android:visibility="visible"
-        app:backgroundTint="@android:color/background_light"
+        app:backgroundTint="@color/btnDefault"
+        app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@android:color/holo_red_light"
-        app:srcCompat="@drawable/remove"
+        app:srcCompat="@drawable/likedefault"
         app:useCompatPadding="false" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnShare"
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginBottom="4dp"
         android:background="@android:drawable/ic_media_play"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="centerInside"
         android:visibility="visible"
-        app:backgroundTint="@android:color/background_light"
+        app:backgroundTint="@color/btnDefault"
+        app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@android:color/holo_orange_light"
+        app:rippleColor="@android:color/holo_green_dark"
         app:srcCompat="@drawable/share"
         app:useCompatPadding="false" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/idRecyclerViewHorizontalList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/listview"
@@ -62,7 +85,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnplay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -76,26 +99,27 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnplay"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
         android:layout_marginBottom="6dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:visibility="visible"
-        app:backgroundTint="@android:color/holo_orange_light"
+        app:backgroundTint="@color/btnDefault"
+        app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btndx"
         app:layout_constraintStart_toEndOf="@+id/btnsx"
-        app:rippleColor="@android:color/holo_red_light"
-        app:srcCompat="@drawable/butonplay" />
+        app:rippleColor="@android:color/holo_orange_light"
+        app:srcCompat="@drawable/playdefault" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnsx"
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -105,15 +129,17 @@
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:scaleType="center"
-        app:srcCompat="@drawable/butoninapoi"
         android:visibility="visible"
-        app:backgroundTint="@android:color/holo_orange_light"
+        app:backgroundTint="@color/btnDefault"
+        app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toEndOf="@+id/btnShare"
-        app:rippleColor="@android:color/holo_orange_dark" />
+        app:rippleColor="@android:color/holo_orange_light"
+        app:srcCompat="@drawable/inapoidefault" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btndx"
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -123,12 +149,13 @@
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal|center"
         android:scaleType="center"
-        app:srcCompat="@drawable/butoninainte"
         android:visibility="visible"
-        app:backgroundTint="@android:color/holo_orange_light"
+        app:backgroundTint="@color/btnDefault"
+        app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
-        app:rippleColor="@android:color/holo_orange_dark"
+        app:rippleColor="@android:color/holo_orange_light"
+        app:srcCompat="@drawable/inaintedefault"
         tools:background="@drawable/next" />
 
     <LinearLayout

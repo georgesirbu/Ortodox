@@ -4,33 +4,26 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -48,21 +40,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity {
+public class playlist_audio extends AppCompatActivity {
 
     public String webhosting = "http://venombit.com";
     public String webCategorii = "/Ortodox/categorii/";
     public String webListe = "/Ortodox/liste/";
     public String webMedia = "";
     public String listaMedia="";
+
+    //TODO: RESOLVE THIS SHIT EMI
     public String linkListaMedia = webhosting + webListe +"acatiste.lst";
 
     public String listaCategorie="";
@@ -74,18 +64,23 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation2:
-                    destroymPlayer();
-                    startActivity(new Intent(MainActivity.this, MainActivity.class));
-                    finish();
-                    return true;
+                    //destroymPlayer();
+                    //startActivity(new Intent(playlist_audio.this, playlist_audio.class));
+                    //finish();
+                    //return true;
                 case R.id.navigation1:
                     destroymPlayer();
-                    startActivity(new Intent(MainActivity.this, Personal.class));
+                    startActivity(new Intent(playlist_audio.this, jurnal.class));
                     finish();
                     return true;
                 case R.id.navigation3:
                     destroymPlayer();
-                    startActivity(new Intent(MainActivity.this, Biblioteca.class));
+                    startActivity(new Intent(playlist_audio.this, playlist_preferiti.class));
+                    finish();
+                    return true;
+                case R.id.navigation4:
+                    destroymPlayer();
+                    startActivity(new Intent(playlist_audio.this, radio.class));
                     finish();
                     return true;
             }
@@ -171,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_audio);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -184,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             connected = false;
-            startActivity(new Intent(MainActivity.this, networkState.class));
+            startActivity(new Intent(playlist_audio.this, networkState.class));
             finish();
         }
 
-        setTitle("Ortodox");
+        setTitle("Audio");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
         //navigation.getMenu().findItem(R.id.navigation1).setChecked(true);
@@ -198,11 +193,11 @@ public class MainActivity extends AppCompatActivity {
         groceryRecyclerView = findViewById(R.id.idRecyclerViewHorizontalList);
 
         // add a divider after each item for more clarity
-        groceryRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, LinearLayoutManager.HORIZONTAL));
+        groceryRecyclerView.addItemDecoration(new DividerItemDecoration(playlist_audio.this, LinearLayoutManager.HORIZONTAL));
         groceryAdapter = new RecyclerViewHorizontalListAdapter(groceryList, getApplicationContext());
 
 
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(playlist_audio.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
 
@@ -235,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the application context
         mContext = getApplicationContext();
-        mActivity = MainActivity.this;
+        mActivity = playlist_audio.this;
 
         // Initialize the handler
         mHandler = new Handler();
@@ -287,10 +282,6 @@ public class MainActivity extends AppCompatActivity {
                 {
 
                 }
-
-
-
-
 
                 mButtonPlay.setImageResource(R.drawable.playdefault);
                 //mButtonPlay.setImageResource(R.drawable.playdefault);
@@ -473,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
                         writer.flush();
                         writer.close();
 
-                        Toast.makeText(MainActivity.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(playlist_audio.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -494,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                         writer.flush();
                         writer.close();
 
-                        Toast.makeText(MainActivity.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(playlist_audio.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -658,12 +649,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intentDeepLink = getIntent();
         //Uri uri = intentDeepLink.getData();
         //String namestring = uri.getQueryParameter("namestring");
-        //Toast.makeText(MainActivity.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+        //Toast.makeText(playlist_audio.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
 
         sharedLink = intentDeepLink.getDataString();
         // } catch (Exception e) {
         //   e.printStackTrace();
-        //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+        //Toast.makeText(playlist_audio.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
 
         //}
 
@@ -677,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (separazioneSharedLink[0] == "null")
                 {
-                    //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(playlist_audio.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
                 }else {
 
                     sharedLink = separazioneSharedLink[0];
@@ -686,12 +677,12 @@ public class MainActivity extends AppCompatActivity {
                     //String dta = intnt.getStringExtra("namestring");
                     //dta = dta +"\n"+ intnt.getDataString();
 
-                    //Toast.makeText(MainActivity.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(playlist_audio.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                //Toast.makeText(MainActivity.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+                //Toast.makeText(playlist_audio.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
 
             }
         }
@@ -778,19 +769,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void caricamentoListaAudio()
     {
-
-
         //if (isNetworkConnected()) {
-        ReadFileTask tsk = new ReadFileTask();
+        ReadAudioList tsk = new ReadAudioList();
         tsk.execute(linkListaMedia);
-
     }
 
     public String[] populategroceryList(){
 
         listaCategorie = "";
 
-        ReadCategorieFileTask tsk = new ReadCategorieFileTask();
+        ReadCategorieList tsk = new ReadCategorieList();
         tsk.execute(webhosting+webCategorii+"categorie.cat");
 
         return linksCat;
@@ -798,7 +786,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class ReadFileTask extends AsyncTask<String,Integer,String> {
+    private class ReadAudioList extends AsyncTask<String,Integer,String> {
 
         protected String doInBackground(String... params) {
             URL url;
@@ -862,18 +850,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter=new ArrayAdapter<String>(MainActivity.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter=new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
 
             listView.setAdapter(adapter);
 
             fineHTTP = 0;
 
-            //Toast.makeText(MainActivity.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
+            //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
             if (sharedLink!=null)
             {
 
-                Toast.makeText(MainActivity.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
+                Toast.makeText(playlist_audio.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
 
                 try {
                     mPlayer.stop();
@@ -932,7 +920,7 @@ public class MainActivity extends AppCompatActivity {
                         caricamentoListaAudio();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(MainActivity.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                        Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
                         sharedLink = null;
 
                     }
@@ -952,7 +940,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class ReadCategorieFileTask extends AsyncTask<String,Integer,String> {
+    private class ReadCategorieList extends AsyncTask<String,Integer,String> {
 
         protected String doInBackground(String... params) {
             URL url;

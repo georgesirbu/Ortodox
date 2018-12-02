@@ -3,17 +3,21 @@
 
     <item
         android:id="@+id/navigation1"
-        android:icon="@drawable/news"
+        android:icon="@drawable/newspaper"
         android:title="Jurnal" />
 
     <item
         android:id="@+id/navigation2"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="Acasa" />
+        android:icon="@drawable/playlistaudio"
+        android:title="Audio" />
 
     <item
         android:id="@+id/navigation3"
-        android:icon="@drawable/preferitimenu"
+        android:icon="@drawable/playlistfavorite"
         android:title="Favorite" />
+    <item
+        android:id="@+id/navigation4"
+        android:icon="@drawable/radio"
+        android:title="Radio" />
 
 </menu>
