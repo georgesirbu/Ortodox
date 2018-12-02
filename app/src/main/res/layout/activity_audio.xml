@@ -47,7 +47,7 @@
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@android:color/holo_green_dark"
+        app:rippleColor="@color/colorPrimary"
         app:srcCompat="@drawable/share"
         app:useCompatPadding="false" />
 
