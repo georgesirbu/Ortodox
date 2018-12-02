@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +24,10 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -135,6 +140,7 @@ public class playlist_preferiti extends AppCompatActivity {
     private Handler mHandler;
     private Runnable mRunnable;
 
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,9 +153,21 @@ public class playlist_preferiti extends AppCompatActivity {
         setTitle("Favorite");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
-        //navigation.getMenu().findItem(R.id.navigation1).setChecked(false);
-        //navigation.getMenu().findItem(R.id.navigation2).setChecked(false);
+
         navigation.getMenu().findItem(R.id.navFavorite).setChecked(true);
+
+
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, getString(R.string.adMobID));
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.adMobUnitID));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+
+
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -464,6 +482,16 @@ public class playlist_preferiti extends AppCompatActivity {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
+
+                                        //PUBLICITA
+
+                                        if (mInterstitialAd.isLoaded()) {
+                                            mInterstitialAd.show();
+                                        } else {
+                                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                                        }
+
+
                                         mButtonDx.performClick();
                                     }
                                 });

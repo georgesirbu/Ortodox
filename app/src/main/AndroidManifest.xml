@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".playlist_audio"
-            android:label="Audio"
+            android:label="Ortodox"
             android:launchMode="singleTask">
 
             <intent-filter>

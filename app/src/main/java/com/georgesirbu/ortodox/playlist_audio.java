@@ -586,7 +586,7 @@ public class playlist_audio extends AppCompatActivity {
                                             Log.d("TAG", "The interstitial wasn't loaded yet.");
                                         }
 
-                                        
+
 
                                         mButtonDx.performClick();
                                     }
