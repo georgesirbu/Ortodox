@@ -53,7 +53,7 @@ public class playlist_audio extends AppCompatActivity {
     public String webMedia = "";
     public String listaMedia="";
 
-    View previousSelectedItem;
+    View updateview;// above oncreate method
 
     //TODO: RESOLVE THIS SHIT EMI
     public String linkListaMedia = webhosting + webListe +"acatiste.lst";
@@ -262,6 +262,8 @@ public class playlist_audio extends AppCompatActivity {
 
         listView = findViewById(R.id.listview);
 
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -287,10 +289,9 @@ public class playlist_audio extends AppCompatActivity {
 
                 mButtonPlay.setImageResource(R.drawable.playdefault);
                 //mButtonPlay.setImageResource(R.drawable.playdefault);
-                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+                //mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
 
                 played = false;
-                
 
                 selectedLink = links[+position];
                 positionLink = position;
@@ -578,6 +579,8 @@ public class playlist_audio extends AppCompatActivity {
                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
                                 //listView.getChildAt(positionLink).setBackgroundColor(Color.CYAN);
+
+                                //listView.getSelectedView().setBackgroundColor(Color.CYAN);
 
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
