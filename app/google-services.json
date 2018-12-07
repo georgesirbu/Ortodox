@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "1039417897724",
+    "firebase_url": "https://ortodox-6fbb7.firebaseio.com",
+    "project_id": "ortodox-6fbb7",
+    "storage_bucket": "ortodox-6fbb7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039417897724:android:c8d31c9d7ebad937",
+        "android_client_info": {
+          "package_name": "com.venombit3.ortodox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039417897724-l5bgmrsmkb6u1vkcdbaar0hvmrumd17a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.venombit3.ortodox",
+            "certificate_hash": "734f898e1b01ec618be768439635367c861c53c9"
+          }
+        },
+        {
+          "client_id": "1039417897724-5uujkbi387vo8e9pcpm9kv5qnsp1gb59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.venombit3.ortodox",
+            "certificate_hash": "2d4514d80ba62c6d21ef0c3535494d8dfa0cf166"
+          }
+        },
+        {
+          "client_id": "1039417897724-ci1rr72jebc0tkj8m133mos56ooaq3cs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJkN8JgSTs7o3iJv9yc5cf4FdoIIQPGtc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039417897724-ci1rr72jebc0tkj8m133mos56ooaq3cs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-6428285541464966~7564362778"
+    }
+  ],
+  "configuration_version": "1"
+}
