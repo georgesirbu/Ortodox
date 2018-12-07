@@ -110,7 +110,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/adMobID" />
+            android:value="ca-app-pub-6428285541464966~7564362778"/>
 
     </application>
 
