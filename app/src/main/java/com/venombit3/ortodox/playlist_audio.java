@@ -201,14 +201,14 @@ public class playlist_audio extends AppCompatActivity {
 
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, getString(R.string.adMobID));
+        //MobileAds.initialize(this, getString(R.string.adMobID));
+        MobileAds.initialize(this, "ca-app-pub-6428285541464966~7564362778");
 
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.adMobUnitID));
+        mInterstitialAd.setAdUnitId("ca-app-pub-6428285541464966/8657952595");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-
-
+        
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -600,7 +600,7 @@ public class playlist_audio extends AppCompatActivity {
                                         if (mInterstitialAd.isLoaded()) {
                                             mInterstitialAd.show();
                                         } else {
-                                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                                            Log.d("PUBLICITATE", "The interstitial wasn't loaded yet.");
                                         }
 
 

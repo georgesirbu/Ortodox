@@ -116,7 +116,7 @@
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:visibility="visible"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/btnDefault"
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btndx"
