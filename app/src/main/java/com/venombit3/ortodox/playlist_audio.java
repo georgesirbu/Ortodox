@@ -51,7 +51,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class playlist_audio extends AppCompatActivity {
 
     public String webhosting = "http://venombit.com";
