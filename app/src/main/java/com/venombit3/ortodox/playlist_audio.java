@@ -1078,8 +1078,29 @@ public class playlist_audio extends AppCompatActivity {
             for (int i=0; i<sizeCat; i++)
             {
 
-                Grocery categorie = new Grocery(dataCat[i], R.drawable.church);
-                groceryList.add(categorie);
+                if (i == 0)
+                {
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.colinde);
+                    groceryList.add(categorie);
+                }else if (i == 1)
+                {
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    groceryList.add(categorie);
+                }else if (i == 2)
+                {
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    groceryList.add(categorie);
+                }else if (i == 3)
+                {
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.bible);
+                    groceryList.add(categorie);
+                }else
+                {
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    groceryList.add(categorie);
+                }
+
+
 
             }
 

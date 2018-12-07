@@ -18,50 +18,99 @@
             android:name="com.venombit3.ortodox.playlist_audio"
             android:label="Ortodox"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="venombit.com"
                     android:scheme="http"
+                    android:host="venombit.com"
                     android:pathPrefix="/Ortodox" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="http" android:host="www.venombit.com" android:path="/Ortodox/" android:pathPattern="redirectScript.php"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
+                <data
+                    android:scheme="http"
+                    android:host="venombit.com"
+                    android:path="/Ortodox/" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="venombit.com"
+                    android:pathPattern="redirectScript.php" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="www.venombit.com"
+                    android:pathPrefix="/Ortodox" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="www.venombit.com"
+                    android:path="/Ortodox/" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="www.venombit.com"
+                    android:pathPattern="redirectScript.php" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.venombit3.ortodox.jurnal"
             android:label="Jurnal"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.venombit3.ortodox.radio"
             android:label="Radio"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.venombit3.ortodox.playlist_preferiti"
             android:label="Preferite"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.venombit3.ortodox.networkState"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/adMobID"/>
+            android:value="@string/adMobID" />
 
     </application>
 

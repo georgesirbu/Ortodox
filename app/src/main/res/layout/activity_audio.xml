@@ -47,7 +47,7 @@
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@color/colorPrimary"
+        app:rippleColor="@android:color/holo_orange_light"
         app:srcCompat="@drawable/share"
         app:useCompatPadding="false" />
 
@@ -104,23 +104,25 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnplay"
-
+        style="@android:style/Widget.Material.Light.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
         android:layout_marginBottom="6dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:visibility="visible"
-        app:backgroundTint="@color/btnDefault"
+        app:backgroundTint="@color/colorAccent"
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btndx"
         app:layout_constraintStart_toEndOf="@+id/btnsx"
-        app:rippleColor="@android:color/holo_orange_light"
-        app:srcCompat="@drawable/playdefault" />
+        app:rippleColor="@color/colorPrimaryDark"
+        app:srcCompat="@drawable/butonplay" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnsx"
@@ -139,8 +141,8 @@
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toEndOf="@+id/btnShare"
-        app:rippleColor="@android:color/holo_orange_light"
-        app:srcCompat="@drawable/inapoidefault" />
+        app:rippleColor="@color/colorPrimary"
+        app:srcCompat="@drawable/butoninapoi" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btndx"
@@ -159,8 +161,8 @@
         app:backgroundTintMode="src_over"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
-        app:rippleColor="@android:color/holo_orange_light"
-        app:srcCompat="@drawable/inaintedefault"
+        app:rippleColor="@color/colorPrimary"
+        app:srcCompat="@drawable/butoninainte"
         tools:background="@drawable/next" />
 
     <LinearLayout

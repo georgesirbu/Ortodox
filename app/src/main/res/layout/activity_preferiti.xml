@@ -107,12 +107,12 @@
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:scaleType="center"
-        app:srcCompat="@drawable/butoninapoi"
         android:visibility="visible"
-        app:backgroundTint="@android:color/holo_orange_light"
+        app:backgroundTint="@color/btnDefault"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toEndOf="@+id/btnShare"
-        app:rippleColor="@android:color/holo_orange_dark" />
+        app:rippleColor="@android:color/holo_orange_dark"
+        app:srcCompat="@drawable/butoninapoi" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btndx"
@@ -125,12 +125,12 @@
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal|center"
         android:scaleType="center"
-        app:srcCompat="@drawable/butoninainte"
         android:visibility="visible"
-        app:backgroundTint="@android:color/holo_orange_light"
+        app:backgroundTint="@color/btnDefault"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
         app:rippleColor="@android:color/holo_orange_dark"
+        app:srcCompat="@drawable/butoninainte"
         tools:background="@drawable/next" />
 
     <LinearLayout

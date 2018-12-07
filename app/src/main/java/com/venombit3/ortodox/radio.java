@@ -138,7 +138,7 @@ public class radio extends AppCompatActivity {
         mButtonDx = findViewById(R.id.btndx2);
 
         mButtonSx.setImageResource(R.drawable.butoninapoi);
-        mButtonDx.setImageResource(R.drawable.butoninapoi);
+        mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.playdefault);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);

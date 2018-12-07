@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnplay"
         app:rippleColor="@color/colorPrimary"
-        app:srcCompat="@drawable/inapoidefault" />
+        app:srcCompat="@drawable/butoninapoi" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btndx2"
@@ -50,7 +50,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnplay"
         app:rippleColor="@color/colorPrimary"
-        app:srcCompat="@drawable/inaintedefault"
+        app:srcCompat="@drawable/butoninainte"
         tools:background="@drawable/next" />
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"

@@ -142,7 +142,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintStart_toEndOf="@+id/btnShare"
         app:rippleColor="@color/colorPrimary"
-        app:srcCompat="@drawable/inapoidefault" />
+        app:srcCompat="@drawable/butoninapoi" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btndx"
@@ -162,7 +162,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
         app:rippleColor="@color/colorPrimary"
-        app:srcCompat="@drawable/inaintedefault"
+        app:srcCompat="@drawable/butoninainte"
         tools:background="@drawable/next" />
 
     <LinearLayout

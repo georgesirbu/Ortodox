@@ -12,7 +12,7 @@
         android:layout_height="60dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:background="@android:color/background_light"
-        app:srcCompat="@drawable/church" />
+        app:srcCompat="@drawable/colinde" />
 
     <TextView
         android:id="@+id/idProductName"
