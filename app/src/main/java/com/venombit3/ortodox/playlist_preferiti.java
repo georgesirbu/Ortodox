@@ -1,4 +1,4 @@
-package com.venombit.ortodox;
+package com.venombit3.ortodox;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -458,7 +458,8 @@ public class playlist_preferiti extends AppCompatActivity {
                                 //Try to play music/audio from url
                                 try{
                                     // Set the audio data source
-                                    mPlayer.setDataSource(audioUrl);
+                                    mPlayer.setDataSource(audioUrl.replaceAll(" ","%20"));
+                                    //mPlayer.setDataSource(audioUrl);
                                     // Prepare the media player
                                     mPlayer.prepare();
 

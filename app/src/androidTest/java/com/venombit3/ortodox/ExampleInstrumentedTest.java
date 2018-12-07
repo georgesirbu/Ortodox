@@ -1,4 +1,4 @@
-package com.venombit.ortodox;
+package com.venombit3.ortodox;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

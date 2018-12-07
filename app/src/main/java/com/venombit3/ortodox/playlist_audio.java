@@ -1,4 +1,4 @@
-package com.venombit.ortodox;
+package com.venombit3.ortodox;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -253,8 +254,8 @@ public class playlist_audio extends AppCompatActivity {
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
-        mButtonSx.setImageResource(R.drawable.inapoidefault);
-        mButtonDx.setImageResource(R.drawable.inaintedefault);
+        mButtonSx.setImageResource(R.drawable.butoninapoi);
+        mButtonDx.setImageResource(R.drawable.butoninainte);
         mButtonPlay.setImageResource(R.drawable.playdefault);
 
         mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
@@ -348,7 +349,7 @@ public class playlist_audio extends AppCompatActivity {
                 sharingIntent.setType("text/plain");
 
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
-                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
@@ -557,16 +558,18 @@ public class playlist_audio extends AppCompatActivity {
                                 progressDialog.show();
                                 // The audio url to play
                                 audioUrl = selectedLink;
-                                // Set the media player audio stream type
-                                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
                             }
 
                             protected String doInBackground(String... params) {
                                 // do background stuff...
                                 //Try to play music/audio from url
                                 try{
+                                    // Set the media player audio stream type
+                                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                    //String encodedPath = URLEncoder.encode(audioUrl, "UTF-8");
                                     // Set the audio data source
-                                    mPlayer.setDataSource(audioUrl);
+                                    mPlayer.setDataSource(audioUrl.replaceAll(" ","%20"));
                                     // Prepare the media player
                                     mPlayer.prepare();
 
@@ -621,10 +624,6 @@ public class playlist_audio extends AppCompatActivity {
                                 mButtonPlay.setImageResource(R.drawable.butonpausa);
                                 //mButtonPlay.setImageResource(R.drawable.playdefault);
                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                                //listView.getChildAt(positionLink).setBackgroundColor(Color.CYAN);
-
-                                //listView.getSelectedView().setBackgroundColor(Color.CYAN);
 
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
@@ -685,56 +684,68 @@ public class playlist_audio extends AppCompatActivity {
 
             getDeepLink();
 
-            if(sharedLink!=null)
-            {
-                //caricamentoListaAudio();
+            if (sharedLink!=null ) {
+
+                if (sharedLink != "") {
+                    caricamentoListaAudio();
+                }
             }
+
         }
 
+    }
+
+    /**
+     * To get the latest intent object.
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     public void getDeepLink()
     {
 
-        //try {
-        Intent intentDeepLink = getIntent();
-        //Uri uri = intentDeepLink.getData();
-        //String namestring = uri.getQueryParameter("namestring");
-        //Toast.makeText(playlist_audio.this, "->" + intentDeepLink.getDataString() + "<-", Toast.LENGTH_LONG).show();
+        Intent intent = getIntent();
 
-        sharedLink = intentDeepLink.getDataString();
-        // } catch (Exception e) {
-        //   e.printStackTrace();
-        //Toast.makeText(playlist_audio.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
+        if(intent != null) {
+            Uri uriData = intent.getData();
 
-        //}
+            if (uriData != null) {
 
+                //To get scheme.
+                String scheme = uriData.getScheme();
+                //To get server name.
+                String host = uriData.getHost();
+                //To get parameter value from the URI.
+                sharedLink = uriData.toString();
 
-        if (sharedLink!=null) {
+            }
+        }
 
-            try {
-                String[] separazioneSharedLink = sharedLink.split("namestring=");
-                separazioneSharedLink = separazioneSharedLink[1].split(";end;");
+        if (sharedLink!=null ) {
 
+            if (sharedLink != ""){
 
-                if (separazioneSharedLink[0] == "null")
-                {
-                    //Toast.makeText(playlist_audio.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
-                }else {
+                try {
+                    String[] separazioneSharedLink = sharedLink.split("namestring=");
+                    separazioneSharedLink = separazioneSharedLink[1].split(";end;");
 
-                    sharedLink = separazioneSharedLink[0];
-                    sharedLink = sharedLink.replaceAll("%20", " ");
+                    if (separazioneSharedLink[0] == "null")
+                    {
+                        //Toast.makeText(playlist_audio.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                    }else {
 
-                    //String dta = intnt.getStringExtra("namestring");
-                    //dta = dta +"\n"+ intnt.getDataString();
+                        sharedLink = separazioneSharedLink[0];
+                        sharedLink = sharedLink.replaceAll("%20", " ");
 
-                    //Toast.makeText(playlist_audio.this, "" + sharedLink + "\n", Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                //Toast.makeText(playlist_audio.this, "->ERRORE<-", Toast.LENGTH_LONG).show();
-
             }
         }
 
@@ -778,7 +789,7 @@ public class playlist_audio extends AppCompatActivity {
                 rest = true;
 
             } else {
-                mButtonFavorite.setImageResource(R.drawable.preferitimenu);
+                mButtonFavorite.setImageResource(R.drawable.likedefault);
                 rest = false;
             }
 

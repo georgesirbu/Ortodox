@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.venombit.ortodox">
+    package="com.venombit3.ortodox">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.venombit.ortodox.playlist_audio"
+            android:name="com.venombit3.ortodox.playlist_audio"
             android:label="Ortodox"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
@@ -40,22 +40,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.venombit.ortodox.jurnal"
+            android:name="com.venombit3.ortodox.jurnal"
             android:label="Jurnal"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name="com.venombit.ortodox.radio"
+            android:name="com.venombit3.ortodox.radio"
             android:label="Radio"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name="com.venombit.ortodox.playlist_preferiti"
+            android:name="com.venombit3.ortodox.playlist_preferiti"
             android:label="Preferite"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name="com.venombit.ortodox.networkState"
+            android:name="com.venombit3.ortodox.networkState"
             android:screenOrientation="portrait"
             />
 

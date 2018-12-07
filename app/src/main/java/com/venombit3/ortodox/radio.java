@@ -1,4 +1,4 @@
-package com.venombit.ortodox;
+package com.venombit3.ortodox;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -137,8 +137,8 @@ public class radio extends AppCompatActivity {
         mButtonSx = findViewById(R.id.btnsx2);
         mButtonDx = findViewById(R.id.btndx2);
 
-        mButtonSx.setImageResource(R.drawable.inapoidefault);
-        mButtonDx.setImageResource(R.drawable.inaintedefault);
+        mButtonSx.setImageResource(R.drawable.butoninapoi);
+        mButtonDx.setImageResource(R.drawable.butoninapoi);
         mButtonPlay.setImageResource(R.drawable.playdefault);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
@@ -311,8 +311,9 @@ public class radio extends AppCompatActivity {
                                 // do background stuff...
                                 //Try to play music/audio from url
                                 try{
+                                    mPlayer.setDataSource(audioUrl.replaceAll(" ","%20"));
                                     // Set the audio data source
-                                    mPlayer.setDataSource(audioUrl);
+                                    //mPlayer.setDataSource(audioUrl);
                                     // Prepare the media player
                                     mPlayer.prepare();
 

@@ -1,4 +1,4 @@
-package com.venombit.ortodox;
+package com.venombit3.ortodox;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
