@@ -94,7 +94,7 @@
         app:layout_constraintEnd_toStartOf="@+id/btndx"
         app:layout_constraintStart_toEndOf="@+id/btnsx"
         app:rippleColor="@android:color/holo_red_light"
-        app:srcCompat="@drawable/butonplay" />
+        app:srcCompat="@drawable/play" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnsx"

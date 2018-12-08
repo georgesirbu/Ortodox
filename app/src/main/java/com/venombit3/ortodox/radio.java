@@ -210,7 +210,9 @@ public class radio extends AppCompatActivity {
 
         mButtonSx.setImageResource(R.drawable.butoninapoi);
         mButtonDx.setImageResource(R.drawable.butoninainte);
-        mButtonPlay.setImageResource(R.drawable.playdefault);
+        mButtonPlay.setImageResource(R.drawable.play);
+
+        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
@@ -242,9 +244,9 @@ public class radio extends AppCompatActivity {
 
                 }
 
-                mButtonPlay.setImageResource(R.drawable.playdefault);
+                mButtonPlay.setImageResource(R.drawable.play);
                 //mButtonPlay.setImageResource(R.drawable.playdefault);
-                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
                 played = false;
 
@@ -411,7 +413,7 @@ public class radio extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.butonplay);
+                                        mButtonPlay.setImageResource(R.drawable.play);
                                         played = false;
 
                                         //mButtonDx.performClick();
@@ -430,7 +432,7 @@ public class radio extends AppCompatActivity {
                                 getAudioStats();
                                 // Initialize the seek bar
                                 //initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.butonpausa);
+                                mButtonPlay.setImageResource(R.drawable.pause);
                                 //mButtonPlay.setImageResource(R.drawable.playdefault);
                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
@@ -467,7 +469,7 @@ public class radio extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.butonpausa);
+                    mButtonPlay.setImageResource(R.drawable.pause);
                     //mButtonPlay.setImageResource(R.drawable.playdefault);
                     mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
@@ -478,7 +480,7 @@ public class radio extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setImageResource(R.drawable.play);
                     //mButtonPlay.setImageResource(R.drawable.playdefault);
                     mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 

@@ -295,9 +295,9 @@ public class playlist_audio extends AppCompatActivity {
 
         mButtonSx.setImageResource(R.drawable.butoninapoi);
         mButtonDx.setImageResource(R.drawable.butoninainte);
-        mButtonPlay.setImageResource(R.drawable.playdefault);
+        mButtonPlay.setImageResource(R.drawable.play);
 
-        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
         //get deep link
         //getDeepLink();
@@ -359,7 +359,9 @@ public class playlist_audio extends AppCompatActivity {
 
                 }
 
-                mButtonPlay.setImageResource(R.drawable.playdefault);
+                mButtonPlay.setImageResource(R.drawable.play);
+                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                 //mButtonPlay.setImageResource(R.drawable.playdefault);
                 //mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
 
@@ -638,7 +640,9 @@ public class playlist_audio extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.butonplay);
+                                        mButtonPlay.setImageResource(R.drawable.play);
+                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                                         played = false;
 
                                         if (mInterstitialAd.isLoaded()) {
@@ -664,7 +668,7 @@ public class playlist_audio extends AppCompatActivity {
                                 getAudioStats();
                                 // Initialize the seek bar
                                 initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.butonpausa);
+                                mButtonPlay.setImageResource(R.drawable.pause);
                                 //mButtonPlay.setImageResource(R.drawable.playdefault);
                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
@@ -690,7 +694,7 @@ public class playlist_audio extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.butonpausa);
+                    mButtonPlay.setImageResource(R.drawable.pause);
                     //mButtonPlay.setImageResource(R.drawable.playdefault);
                     mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
@@ -701,7 +705,7 @@ public class playlist_audio extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.playdefault);
+                    mButtonPlay.setImageResource(R.drawable.play);
                     //mButtonPlay.setImageResource(R.drawable.playdefault);
                     mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 

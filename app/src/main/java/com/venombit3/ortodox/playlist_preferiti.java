@@ -235,8 +235,9 @@ public class playlist_preferiti extends AppCompatActivity {
 
         mButtonSx.setImageResource(R.drawable.butoninapoi);
         mButtonDx.setImageResource(R.drawable.butoninainte);
-        mButtonPlay.setImageResource(R.drawable.butonplay);
+        mButtonPlay.setImageResource(R.drawable.play);
 
+        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
         // Get the application context
         mContext = getApplicationContext();
@@ -298,7 +299,10 @@ public class playlist_preferiti extends AppCompatActivity {
 
                 }
 
-                mButtonPlay.setImageResource(R.drawable.butonplay);
+                mButtonPlay.setImageResource(R.drawable.play);
+                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
+
                 played = false;
 
                 selectedLink = links[+position];
@@ -460,7 +464,6 @@ public class playlist_preferiti extends AppCompatActivity {
         mButtonShare.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-
                 String linkToShare = selectedLink;
                 linkToShare = linkToShare.replaceAll(" ", "%20");
 
@@ -468,7 +471,7 @@ public class playlist_preferiti extends AppCompatActivity {
                 sharingIntent.setType("text/plain");
 
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
-                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
@@ -538,7 +541,9 @@ public class playlist_preferiti extends AppCompatActivity {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.butonplay);
+                                        mButtonPlay.setImageResource(R.drawable.play);
+                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                                         played = false;
 
                                         //PUBLICITA
@@ -567,7 +572,9 @@ public class playlist_preferiti extends AppCompatActivity {
                                 getAudioStats();
                                 // Initialize the seek bar
                                 initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.butonpausa);
+                                mButtonPlay.setImageResource(R.drawable.pause);
+                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                                 ultimoLink = selectedLink;
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
@@ -599,7 +606,9 @@ public class playlist_preferiti extends AppCompatActivity {
 
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.butonpausa);
+                    mButtonPlay.setImageResource(R.drawable.pause);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
                     ultimoLink = selectedLink;
                     played = true;
                     skiped = false;
@@ -607,7 +616,9 @@ public class playlist_preferiti extends AppCompatActivity {
                 }else
                 {
                     mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.butonplay);
+                    mButtonPlay.setImageResource(R.drawable.play);
+                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
                     played = false;
                     skiped = false;
                 }
