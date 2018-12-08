@@ -14,7 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -106,6 +107,11 @@
             android:name="com.venombit3.ortodox.radio"
             android:label="Radio"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.venombit3.ortodox.tv"
+            android:label="Trinitas TV"
+            android:screenOrientation="landscape"
+            android:hardwareAccelerated="true"/>
         <activity
             android:name="com.venombit3.ortodox.playlist_preferiti"
             android:label="Preferite"

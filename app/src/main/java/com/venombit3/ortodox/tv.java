@@ -6,12 +6,17 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class jurnal extends AppCompatActivity {
+public class tv extends AppCompatActivity {
 
     private TextView mTextMessage;
 
@@ -22,26 +27,27 @@ public class jurnal extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navAudio:
-                    startActivity(new Intent(jurnal.this, playlist_audio.class));
+                    startActivity(new Intent(tv.this, playlist_audio.class));
                     finish();
                     return true;
-                //case R.id.navJurnal:
-                   //startActivity(new Intent(jurnal.this, jurnal.class));
-                    //finish();
-                    //return true;
+                case R.id.navJurnal:
+                   startActivity(new Intent(tv.this, jurnal.class));
+                    finish();
+                    return true;
                 case R.id.navFavorite:
-                    startActivity(new Intent(jurnal.this, playlist_preferiti.class));
+                    startActivity(new Intent(tv.this, playlist_preferiti.class));
                     finish();
                     return true;
                 case R.id.navRadio:
                     //destroymPlayer();
-                    startActivity(new Intent(jurnal.this, radio.class));
+                    startActivity(new Intent(tv.this, radio.class));
                     finish();
                     return true;
                 case R.id.navTv:
-                    startActivity(new Intent(jurnal.this, tv.class));
-                    finish();
-                    return true;
+                   // startActivity(new Intent(tv.this, tv.class));
+                   // finish();
+                   // return true;
+
             }
             return false;
         }
@@ -50,24 +56,29 @@ public class jurnal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_jurnal);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_tv);
+
+        getSupportActionBar().hide();
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        navigation.getMenu().findItem(R.id.navJurnal).setChecked(true);
+        navigation.getMenu().findItem(R.id.navTv).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
-        setTitle("Jurnal");
+        setTitle("Trinitas TV");
 
         WebView htmlWebView = (WebView)findViewById(R.id.webview);
         htmlWebView.setWebViewClient(new CustomWebViewClient());
         WebSettings webSetting = htmlWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDisplayZoomControls(true);
-        htmlWebView.loadUrl("http://venombit.com/Ortodox/jurnal/index.html");
-
+        webSetting.setAppCacheEnabled(true);
+        webSetting.setSaveFormData(true);
+        htmlWebView.loadUrl("http://venombit.com/Ortodox/tv/index.html");
 
     }
 
@@ -79,4 +90,7 @@ public class jurnal extends AppCompatActivity {
         }
     }
 
+
+
 }
+

@@ -15,6 +15,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -66,6 +67,10 @@ public class radio extends AppCompatActivity {
                     //startActivity(new Intent(radio.this, radio.class));
                     //finish();
                     //return true;
+                case R.id.navTv:
+                    startActivity(new Intent(radio.this, tv.class));
+                    finish();
+                    return true;
             }
             return false;
         }
@@ -143,10 +148,23 @@ public class radio extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        AdView adView = new AdView(this);
+        final AdView adView = new AdView(this);
         adView.setAdSize(AdSize.BANNER);
         adView.setAdUnitId(appBannerUnitId);
 
+        adView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdLoaded() {
+                adView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int error) {
+                adView.setVisibility(View.GONE);
+            }
+
+        });
 
         //fullscreen ads
         Log.d("PUBLICITA", "ON CREATE:");
@@ -495,6 +513,26 @@ public class radio extends AppCompatActivity {
             caricamentoListaAudio();
         }
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        destroymPlayer();
+        startActivity(new Intent(radio.this, playlist_audio.class));
+        finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void destroymPlayer()

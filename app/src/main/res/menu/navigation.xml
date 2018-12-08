@@ -19,5 +19,9 @@
         android:id="@+id/navRadio"
         android:icon="@drawable/radio"
         android:title="Radio" />
+    <item
+        android:id="@+id/navTv"
+        android:icon="@drawable/tv"
+        android:title="Trinitas TV" />
 
 </menu>

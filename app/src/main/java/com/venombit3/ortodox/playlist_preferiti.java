@@ -75,6 +75,10 @@ public class playlist_preferiti extends AppCompatActivity {
                     startActivity(new Intent(playlist_preferiti.this, radio.class));
                     finish();
                     return true;
+                case R.id.navTv:
+                    startActivity(new Intent(playlist_preferiti.this, tv.class));
+                    finish();
+                    return true;
             }
             return false;
         }
@@ -175,10 +179,23 @@ public class playlist_preferiti extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        AdView adView = new AdView(this);
+        final AdView adView = new AdView(this);
         adView.setAdSize(AdSize.BANNER);
         adView.setAdUnitId(appBannerUnitId);
 
+        adView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdLoaded() {
+                adView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int error) {
+                adView.setVisibility(View.GONE);
+            }
+
+        });
 
         //fullscreen ads
         Log.d("PUBLICITA", "ON CREATE:");

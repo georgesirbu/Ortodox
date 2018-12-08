@@ -94,6 +94,10 @@ public class playlist_audio extends AppCompatActivity {
                     startActivity(new Intent(playlist_audio.this, radio.class));
                     finish();
                     return true;
+                case R.id.navTv:
+                    startActivity(new Intent(playlist_audio.this, tv.class));
+                    finish();
+                    return true;
             }
             return false;
         }
@@ -224,6 +228,7 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+
             }
 
             @Override
