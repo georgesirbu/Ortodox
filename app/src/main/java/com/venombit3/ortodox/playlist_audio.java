@@ -35,6 +35,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.ads.mediationtestsuite.MediationTestSuite;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -173,6 +175,8 @@ public class playlist_audio extends AppCompatActivity {
     boolean connected = false;
 
     private InterstitialAd mInterstitialAd;
+    private String appId ;
+    private String appUnitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,7 +188,7 @@ public class playlist_audio extends AppCompatActivity {
 
 
         // The request code used in ActivityCompat.requestPermissions()
-// and returned in the Activity's onRequestPermissionsResult()
+        // and returned in the Activity's onRequestPermissionsResult()
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -199,15 +203,51 @@ public class playlist_audio extends AppCompatActivity {
         }
 
 
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        //MobileAds.initialize(this, getString(R.string.adMobID));
-        MobileAds.initialize(this, "ca-app-pub-6428285541464966~7564362778");
+        appId = getString(R.string.adMobID);
+        appUnitId = getString(R.string.adMobUnitID);
 
+        Log.d("PUBLICITA", "ON CREATE:");
+        //Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, appId);
+        Log.d("PUBLICITA", "APP ID: " + appId);
+        //getString(R.string.adMobID)
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6428285541464966/8657952595");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdUnitId(appUnitId);
+        Log.d("PUBLICITA", "APP UNIT ID: " +  appUnitId);
+        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
-        
+        //-> TESST ADS
+        //MediationTestSuite.launch(playlist_audio.this, appId);
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
+
+
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -390,8 +430,10 @@ public class playlist_audio extends AppCompatActivity {
 
                     selectedLink = links[positionLink];
                     selectedName = data[+positionLink];
+                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                     listView.setItemChecked(positionLink, true);
                     skiped = true;
+
                     mButtonPlay.performClick();
 
                 }
@@ -438,6 +480,7 @@ public class playlist_audio extends AppCompatActivity {
 
                     selectedLink = links[positionLink];
                     selectedName = data[+positionLink];
+                    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                     listView.setItemChecked(positionLink, true);
                     skiped = true;
                     mButtonPlay.performClick();
@@ -548,6 +591,11 @@ public class playlist_audio extends AppCompatActivity {
 
                         new AsyncTask<String, Integer, String>() {
                             protected void onPreExecute() {
+
+                                mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
+                                //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                Log.d("PUBLICITA", "AD LOADED");
+
                                 // do pre execute stuff...
                                 skiped = false;
                                 progressDialog.setTitle(categoriaName);
@@ -593,16 +641,12 @@ public class playlist_audio extends AppCompatActivity {
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
 
-
-                                        //PUBLICITA
-
                                         if (mInterstitialAd.isLoaded()) {
                                             mInterstitialAd.show();
+                                            Log.d("PUBLICITA", "AD STARTED");
                                         } else {
-                                            Log.d("PUBLICITATE", "The interstitial wasn't loaded yet.");
+                                            Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
                                         }
-
-
 
                                         mButtonDx.performClick();
                                     }
@@ -628,6 +672,7 @@ public class playlist_audio extends AppCompatActivity {
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
                                 skiped = false;
+
                             }
                         }.execute();
 
@@ -679,6 +724,7 @@ public class playlist_audio extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
+
         if (connected){
 
             getDeepLink();
@@ -1159,6 +1205,15 @@ public class playlist_audio extends AppCompatActivity {
                     positonCat = position;
                     linkListaMedia = linksCat[position];
                     caricamentoListaAudio();
+
+                    //PUBLICITA
+
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                        Log.d("PUBLICITA", "AD STARTED");
+                    } else {
+                        Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                    }
 
                 }
             });

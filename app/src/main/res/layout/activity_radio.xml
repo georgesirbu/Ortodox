@@ -87,9 +87,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center_vertical|center_horizontal"
@@ -98,6 +99,7 @@
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/btndx2"
         app:layout_constraintStart_toEndOf="@+id/btnsx2"
+        app:layout_constraintTop_toBottomOf="@+id/listview"
         app:rippleColor="@android:color/holo_red_light"
         app:srcCompat="@drawable/butonplay" />
 
@@ -117,6 +119,16 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textSize="12sp" />
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/adMobBannerUnitID"></com.google.android.gms.ads.AdView>
+
 
     </LinearLayout>
 

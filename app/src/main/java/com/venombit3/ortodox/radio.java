@@ -14,12 +14,20 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,6 +114,12 @@ public class radio extends AppCompatActivity {
 
     boolean connected = false;
 
+    private InterstitialAd mInterstitialAd;
+    private String appId ;
+    private String appUnitId;
+    private String appBannerUnitId;
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +130,63 @@ public class radio extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         navigation.getMenu().findItem(R.id.navRadio).setChecked(true);
+
+
+        appId = getString(R.string.adMobID);
+        appUnitId = getString(R.string.adMobUnitID);
+        appBannerUnitId = getString(R.string.adMobBannerUnitID);
+
+
+        //banner ads
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.BANNER);
+        adView.setAdUnitId(appBannerUnitId);
+
+
+        //fullscreen ads
+        Log.d("PUBLICITA", "ON CREATE:");
+        //Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, appId);
+        Log.d("PUBLICITA", "APP ID: " + appId);
+        //getString(R.string.adMobID)
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(appUnitId);
+        Log.d("PUBLICITA", "APP UNIT ID: " +  appUnitId);
+        //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
+
 
         setTitle("Radio");
 
@@ -294,6 +365,11 @@ public class radio extends AppCompatActivity {
 
                         new AsyncTask<String, Integer, String>() {
                             protected void onPreExecute() {
+
+                                mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
+                                //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                Log.d("PUBLICITA", "AD LOADED");
+
                                 // do pre execute stuff...
                                 skiped = false;
                                 progressDialog.setTitle("Radio");
@@ -337,7 +413,8 @@ public class radio extends AppCompatActivity {
                                         //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                         mButtonPlay.setImageResource(R.drawable.butonplay);
                                         played = false;
-                                        //mButtonSx.performClick();
+
+                                        //mButtonDx.performClick();
                                     }
                                 });
                                 return "";
@@ -361,6 +438,18 @@ public class radio extends AppCompatActivity {
                                 lblRiproduzzione.setText(selectedName);
                                 played = true;
                                 skiped = false;
+
+
+                                //PUBLICITA
+
+                                if (mInterstitialAd.isLoaded()) {
+                                    mInterstitialAd.show();
+                                    Log.d("PUBLICITA", "AD STARTED");
+                                } else {
+                                    Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                }
+
+
                             }
                         }.execute();
 

@@ -8,12 +8,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/adMobID"/>
+
         <activity
             android:name="com.venombit3.ortodox.playlist_audio"
             android:label="Ortodox"
@@ -24,7 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -91,6 +96,7 @@
                     android:host="www.venombit.com"
                     android:pathPattern="redirectScript.php" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.venombit3.ortodox.jurnal"
@@ -107,10 +113,6 @@
         <activity
             android:name="com.venombit3.ortodox.networkState"
             android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6428285541464966~7564362778"/>
 
     </application>
 
