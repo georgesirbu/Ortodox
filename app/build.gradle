@@ -6,8 +6,8 @@ android {
         applicationId "com.venombit3.ortodox"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
@@ -37,6 +37,11 @@ dependencies {
     //publicita
     implementation 'com.google.android.gms:play-services-ads:17.1.2'
     implementation 'com.google.android.ads:mediation-test-suite:0.9.2' //beta test ads
+
+    //notifiche firebase
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
 
 }
 apply plugin: 'com.google.gms.google-services'

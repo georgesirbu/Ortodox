@@ -76,6 +76,7 @@ public class playlist_preferiti extends AppCompatActivity {
                     finish();
                     return true;
                 case R.id.navTv:
+                    destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, tv.class));
                     finish();
                     return true;

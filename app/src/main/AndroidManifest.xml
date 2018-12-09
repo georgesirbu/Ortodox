@@ -20,6 +20,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/adMobID"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/cross" />
 
         <activity
             android:name="com.venombit3.ortodox.playlist_audio"

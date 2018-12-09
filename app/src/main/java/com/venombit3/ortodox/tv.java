@@ -79,7 +79,6 @@ public class tv extends AppCompatActivity {
         webSetting.setAppCacheEnabled(true);
         webSetting.setSaveFormData(true);
         htmlWebView.loadUrl("http://venombit.com/Ortodox/tv/index.html");
-
     }
 
     private class CustomWebViewClient extends WebViewClient {

@@ -68,6 +68,7 @@ public class radio extends AppCompatActivity {
                     //finish();
                     //return true;
                 case R.id.navTv:
+                    destroymPlayer();
                     startActivity(new Intent(radio.this, tv.class));
                     finish();
                     return true;

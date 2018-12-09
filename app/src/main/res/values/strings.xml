@@ -18,4 +18,6 @@
     <string name="adMobBannerUnitID">ca-app-pub-6428285541464966/2755695127</string>
     <string name="adMobTestDevice">23441BE60D3215786403931AB7F74983</string>
 
+    <string name="msg_token_fmt"></string>
+
 </resources>

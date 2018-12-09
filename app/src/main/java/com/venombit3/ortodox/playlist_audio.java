@@ -26,20 +26,25 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.ads.mediationtestsuite.MediationTestSuite;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -95,6 +100,7 @@ public class playlist_audio extends AppCompatActivity {
                     finish();
                     return true;
                 case R.id.navTv:
+                    destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, tv.class));
                     finish();
                     return true;
@@ -151,6 +157,7 @@ public class playlist_audio extends AppCompatActivity {
 
     private SeekBar barraAudio;
     private TextView lblRiproduzzione;
+    private LinearLayout linearLayout;
 
     public  String[] linksCat;
     public int positonCat;
@@ -182,14 +189,25 @@ public class playlist_audio extends AppCompatActivity {
     private String appId ;
     private String appUnitId;
 
+    public int mLastFirstVisibleItem;
+
+    int countDown=0;
+    int countUp = 0;
+
+    Spinner spinner2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio);
+
+
+        //getSupportActionBar().hide();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
 
         // The request code used in ActivityCompat.requestPermissions()
         // and returned in the Activity's onRequestPermissionsResult()
@@ -252,7 +270,6 @@ public class playlist_audio extends AppCompatActivity {
             }
         });
 
-
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -264,6 +281,29 @@ public class playlist_audio extends AppCompatActivity {
             startActivity(new Intent(playlist_audio.this, networkState.class));
             finish();
         }
+
+
+        //CLOUD NOTIFICATION FIREBASE
+
+        // Get token
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("NOTIFICATION: ", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = token;
+                        Log.d("NOTIFICATION", msg);
+                        //Toast.makeText(playlist_audio.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
         setTitle("Audio");
         //getActionBar().setIcon(R.drawable.preferitimenu);
@@ -283,6 +323,8 @@ public class playlist_audio extends AppCompatActivity {
         if (connected) {
             populategroceryList();
         }
+
+        linearLayout = findViewById(R.id.linearLayout);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -383,6 +425,54 @@ public class playlist_audio extends AppCompatActivity {
 
             }
         });
+
+
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener(){
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                // TODO Auto-generated method stub
+            }
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // TODO Auto-generated method stub
+                final ListView lw = listView;
+
+                if(scrollState == 0)
+                    Log.i("DIR:", "scrolling stopped...");
+
+                //int mLastFirstVisibleItem = lw.getLastVisiblePosition();
+                if (view.getId() == lw.getId()) {
+
+                    final int currentFirstVisibleItem = lw.getFirstVisiblePosition();
+                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                        //mIsScrollingUp = false;
+                        Log.i("DIR:", "scrolling down...");
+                        //countDown = countDown +1;
+                        linearLayout.setVisibility(View.INVISIBLE);
+
+                        // Gets the layout params that will allow you to resize the layout
+                        ViewGroup.LayoutParams params = linearLayout.getLayoutParams();
+                        // Changes the height and width to the specified *pixels*
+                        params.height = 0;
+                        linearLayout.setLayoutParams(params);
+
+                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                        //mIsScrollingUp = true;
+                        Log.i("DIR:", "scrolling up...");
+                        //countUp = countUp +1;
+                        linearLayout.setVisibility(View.VISIBLE);
+
+                        // Gets the layout params that will allow you to resize the layout
+                        ViewGroup.LayoutParams params = linearLayout.getLayoutParams();
+                        // Changes the height and width to the specified *pixels*
+                        params.height = params.WRAP_CONTENT;
+                        linearLayout.setLayoutParams(params);
+                    }
+
+                    mLastFirstVisibleItem = currentFirstVisibleItem;
+                }
+            }
+        });
+
 
         mButtonShare.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -500,86 +590,87 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                if (selectedName != "") {
 
-                String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+                    String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
 
-                String line = "";
-                String oldFavorites = "";
+                    String line = "";
+                    String oldFavorites = "";
 
-                //Get the text file
-                File file = new File(dirPath, "favoriteList.lst");
+                    //Get the text file
+                    File file = new File(dirPath, "favoriteList.lst");
 
-                //Read text from file
-                StringBuilder text = new StringBuilder();
-
-
-                try {
-                    BufferedReader br = new BufferedReader(new FileReader(file));
-
-                    while ((line = br.readLine()) != null) {
-                        text.append(line);
-                        //text.append('\n');
-                    }
-                    br.close();
-                } catch (IOException e) {
-                    //You'll need to add proper error handling here
-                }
-
-                oldFavorites = text.toString();
-
-                File projDir = new File(dirPath);
-                if (!projDir.exists()) {
-                    projDir.mkdirs();
-                }
-
-                if (checkFavorite() == false) {
+                    //Read text from file
+                    StringBuilder text = new StringBuilder();
 
 
                     try {
+                        BufferedReader br = new BufferedReader(new FileReader(file));
 
-                        File gpxfile = new File(dirPath, "favoriteList.lst");
-                        FileWriter writer = new FileWriter(gpxfile);
+                        while ((line = br.readLine()) != null) {
+                            text.append(line);
+                            //text.append('\n');
+                        }
+                        br.close();
+                    } catch (IOException e) {
+                        //You'll need to add proper error handling here
+                    }
 
-                        if (oldFavorites.isEmpty()) {
-                            writer.append(selectedName + ">" + selectedLink + ">");
-                        } else {
-                            writer.append(oldFavorites + selectedName + ">" + selectedLink + ">");
+                    oldFavorites = text.toString();
+
+                    File projDir = new File(dirPath);
+                    if (!projDir.exists()) {
+                        projDir.mkdirs();
+                    }
+
+                    if (checkFavorite() == false) {
+
+
+                        try {
+
+                            File gpxfile = new File(dirPath, "favoriteList.lst");
+                            FileWriter writer = new FileWriter(gpxfile);
+
+                            if (oldFavorites.isEmpty()) {
+                                writer.append(selectedName + ">" + selectedLink + ">");
+                            } else {
+                                writer.append(oldFavorites + selectedName + ">" + selectedLink + ">");
+                            }
+
+                            writer.flush();
+                            writer.close();
+
+                            Toast.makeText(playlist_audio.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
 
-                        writer.flush();
-                        writer.close();
+                    } else {
 
-                        Toast.makeText(playlist_audio.this, "Adaugat la Favorite.", Toast.LENGTH_SHORT).show();
+                        oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">", "");
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        try {
+
+                            File gpxfile = new File(dirPath, "favoriteList.lst");
+                            FileWriter writer = new FileWriter(gpxfile);
+
+                            writer.append(oldFavorites);//testo
+
+                            writer.flush();
+                            writer.close();
+
+                            Toast.makeText(playlist_audio.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
-                }else
-                {
-
-                    oldFavorites = oldFavorites.replace(selectedName + ">" + selectedLink + ">","");
-
-                    try {
-
-                        File gpxfile = new File(dirPath, "favoriteList.lst");
-                        FileWriter writer = new FileWriter(gpxfile);
-
-                        writer.append(oldFavorites);//testo
-
-                        writer.flush();
-                        writer.close();
-
-                        Toast.makeText(playlist_audio.this, "Scos de la Favorite.", Toast.LENGTH_SHORT).show();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    checkFavorite();
 
                 }
-
-                checkFavorite();
-
             }
         });
 
@@ -727,7 +818,10 @@ public class playlist_audio extends AppCompatActivity {
 
         idAudioRilevato = -1;
 
+
     }
+
+
 
     @Override
     protected void onResume()
@@ -1244,4 +1338,17 @@ public class playlist_audio extends AppCompatActivity {
         }
     }
 
+    private class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
 }
