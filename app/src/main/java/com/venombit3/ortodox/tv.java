@@ -31,7 +31,7 @@ public class tv extends AppCompatActivity {
                     finish();
                     return true;
                 case R.id.navJurnal:
-                   startActivity(new Intent(tv.this, jurnal.class));
+                   startActivity(new Intent(tv.this, calendar.class));
                     finish();
                     return true;
                 case R.id.navFavorite:
@@ -47,6 +47,11 @@ public class tv extends AppCompatActivity {
                    // startActivity(new Intent(tv.this, tv.class));
                    // finish();
                    // return true;
+                    // case R.id.navCalendar:
+                    //    destroymPlayer();
+                    //    startActivity(new Intent(playlist_preferiti.this, calendar.class));
+                    //    finish();
+                    //    return true;
 
             }
             return false;

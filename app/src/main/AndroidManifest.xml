@@ -116,6 +116,10 @@
             android:screenOrientation="landscape"
             android:hardwareAccelerated="true"/>
         <activity
+            android:name="com.venombit3.ortodox.calendar"
+            android:label="Calendar"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.venombit3.ortodox.playlist_preferiti"
             android:label="Preferite"
             android:screenOrientation="portrait" />

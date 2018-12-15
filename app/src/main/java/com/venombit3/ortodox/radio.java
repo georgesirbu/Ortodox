@@ -54,7 +54,7 @@ public class radio extends AppCompatActivity {
                     return true;
                 case R.id.navJurnal:
                     destroymPlayer();
-                    startActivity(new Intent(radio.this, jurnal.class));
+                    startActivity(new Intent(radio.this, calendar.class));
                     finish();
                     return true;
                 case R.id.navFavorite:
@@ -72,6 +72,11 @@ public class radio extends AppCompatActivity {
                     startActivity(new Intent(radio.this, tv.class));
                     finish();
                     return true;
+                //case R.id.navCalendar:
+                //    destroymPlayer();
+                //    startActivity(new Intent(playlist_preferiti.this, calendar.class));
+                //    finish();
+                //    return true;
             }
             return false;
         }
@@ -143,35 +148,46 @@ public class radio extends AppCompatActivity {
         appBannerUnitId = getString(R.string.adMobBannerUnitID);
 
 
-        //banner ads
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        final AdView adView = new AdView(this);
-        adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId(appBannerUnitId);
-
-        adView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                adView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAdFailedToLoad(int error) {
-                adView.setVisibility(View.GONE);
-            }
-
-        });
-
         //fullscreen ads
         Log.d("PUBLICITA", "ON CREATE:");
         //Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, appId);
-        Log.d("PUBLICITA", "APP ID: " + appId);
+        Log.d("PUBLICITA", "INIZIALIZZO APP ID: " + appId);
+        //banner ads
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                mAdView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                mAdView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+        Log.d("PUBLICITA", "BANNER OK " + appBannerUnitId );
         //getString(R.string.adMobID)
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(appUnitId);

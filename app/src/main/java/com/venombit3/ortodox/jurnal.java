@@ -42,6 +42,11 @@ public class jurnal extends AppCompatActivity {
                     startActivity(new Intent(jurnal.this, tv.class));
                     finish();
                     return true;
+                //case R.id.navCalendar:
+                //    destroymPlayer();
+                //    startActivity(new Intent(playlist_preferiti.this, calendar.class));
+                //    finish();
+                //    return true;
             }
             return false;
         }
@@ -50,6 +55,9 @@ public class jurnal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WebView htmlWebView = (WebView)findViewById(R.id.webview);
+
         setContentView(R.layout.activity_jurnal);
 
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -57,11 +65,10 @@ public class jurnal extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         navigation.getMenu().findItem(R.id.navJurnal).setChecked(true);
-        //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
-        //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
+
         setTitle("Jurnal");
 
-        WebView htmlWebView = (WebView)findViewById(R.id.webview);
+
         htmlWebView.setWebViewClient(new CustomWebViewClient());
         WebSettings webSetting = htmlWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);

@@ -37,6 +37,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.ads.mediationtestsuite.MediationTestSuite;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -86,7 +87,7 @@ public class playlist_audio extends AppCompatActivity {
                 //return true;
                 case R.id.navJurnal:
                     destroymPlayer();
-                    startActivity(new Intent(playlist_audio.this, jurnal.class));
+                    startActivity(new Intent(playlist_audio.this, calendar.class));
                     finish();
                     return true;
                 case R.id.navFavorite:
@@ -104,6 +105,11 @@ public class playlist_audio extends AppCompatActivity {
                     startActivity(new Intent(playlist_audio.this, tv.class));
                     finish();
                     return true;
+                //case R.id.navCalendar:
+                //    destroymPlayer();
+                //    startActivity(new Intent(playlist_preferiti.this, calendar.class));
+                //    finish();
+                //    return true;
             }
             return false;
         }
@@ -240,7 +246,7 @@ public class playlist_audio extends AppCompatActivity {
         //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
         //-> TESST ADS
-        //MediationTestSuite.launch(playlist_audio.this, appId);
+        MediationTestSuite.launch(playlist_audio.this, appId);
 
         mInterstitialAd.setAdListener(new AdListener() {
             @Override

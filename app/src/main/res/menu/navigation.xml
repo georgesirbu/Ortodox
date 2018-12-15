@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/navJurnal"
-        android:icon="@drawable/newspaper"
-        android:title="Jurnal" />
+        android:icon="@drawable/calendar"
+        android:title="Calendar" />
 
     <item
         android:id="@+id/navAudio"
