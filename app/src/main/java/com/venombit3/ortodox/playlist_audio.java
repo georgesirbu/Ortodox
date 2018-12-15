@@ -246,7 +246,7 @@ public class playlist_audio extends AppCompatActivity {
         //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
         //-> TESST ADS
-        MediationTestSuite.launch(playlist_audio.this, appId);
+        //MediationTestSuite.launch(playlist_audio.this, appId);
 
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
