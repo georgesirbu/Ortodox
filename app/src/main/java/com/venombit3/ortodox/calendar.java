@@ -251,7 +251,8 @@ public class calendar extends AppCompatActivity {
             htmlWebView.setWebViewClient(new CustomWebViewClient());
             WebSettings webSetting = htmlWebView.getSettings();
             webSetting.setJavaScriptEnabled(true);
-            webSetting.setDisplayZoomControls(true);
+            webSetting.setAppCacheEnabled(false);
+            webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
             Calendar c = Calendar.getInstance();
             int month = c.get(Calendar.MONTH);
@@ -425,6 +426,12 @@ public class calendar extends AppCompatActivity {
             fineHTTP2 = 1;
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(calendar.this, playlist_audio.class));
+        finish();
     }
 
 

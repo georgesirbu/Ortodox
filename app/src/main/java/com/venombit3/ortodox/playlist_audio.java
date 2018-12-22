@@ -1,22 +1,30 @@
 package com.venombit3.ortodox;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -209,8 +218,10 @@ public class playlist_audio extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio);
 
+        //MEDIA PLAYER CONTROLLER
 
-        //getSupportActionBar().hide();
+
+
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -223,25 +234,26 @@ public class playlist_audio extends AppCompatActivity {
                 android.Manifest.permission.INTERNET,
                 android.Manifest.permission.ACCESS_WIFI_STATE,
                 android.Manifest.permission.ACCESS_NETWORK_STATE,
-                android.Manifest.permission.CAMERA
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.MEDIA_CONTENT_CONTROL,
+                android.Manifest.permission.WAKE_LOCK
         };
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
-
         appId = getString(R.string.adMobID);
         appUnitId = getString(R.string.adMobUnitID);
 
-        Log.d("PUBLICITA", "ON CREATE:");
+        //Log.d("PUBLICITA", "ON CREATE:");
         //Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, appId);
-        Log.d("PUBLICITA", "APP ID: " + appId);
+        //Log.d("PUBLICITA", "APP ID: " + appId);
         //getString(R.string.adMobID)
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(appUnitId);
-        Log.d("PUBLICITA", "APP UNIT ID: " +  appUnitId);
+        //Log.d("PUBLICITA", "APP UNIT ID: " +  appUnitId);
         //mInterstitialAd.loadAd(new AdRequest.Builder().build());
         //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
@@ -451,27 +463,17 @@ public class playlist_audio extends AppCompatActivity {
                     final int currentFirstVisibleItem = lw.getFirstVisiblePosition();
                     if (currentFirstVisibleItem > mLastFirstVisibleItem) {
                         //mIsScrollingUp = false;
-                        Log.i("DIR:", "scrolling down...");
+                        //Log.i("DIR:", "scrolling down...");
                         //countDown = countDown +1;
-                        linearLayout.setVisibility(View.INVISIBLE);
+                        linearLayout.setVisibility(View.GONE);
 
-                        // Gets the layout params that will allow you to resize the layout
-                        ViewGroup.LayoutParams params = linearLayout.getLayoutParams();
-                        // Changes the height and width to the specified *pixels*
-                        params.height = 0;
-                        linearLayout.setLayoutParams(params);
 
                     } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
                         //mIsScrollingUp = true;
-                        Log.i("DIR:", "scrolling up...");
+                        //Log.i("DIR:", "scrolling up...");
                         //countUp = countUp +1;
                         linearLayout.setVisibility(View.VISIBLE);
 
-                        // Gets the layout params that will allow you to resize the layout
-                        ViewGroup.LayoutParams params = linearLayout.getLayoutParams();
-                        // Changes the height and width to the specified *pixels*
-                        params.height = params.WRAP_CONTENT;
-                        linearLayout.setLayoutParams(params);
                     }
 
                     mLastFirstVisibleItem = currentFirstVisibleItem;
@@ -685,138 +687,154 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(played == false ) {
 
-                    if ((ultimoLink != selectedLink) || (skiped == true))
-                    {
+                    if (played == false) {
 
-                        // Initialize a new media player instance
-                        mPlayer = new MediaPlayer();
+                        if ((ultimoLink != selectedLink) || (skiped == true)) {
 
-                        new AsyncTask<String, Integer, String>() {
-                            protected void onPreExecute() {
+                            // Initialize a new media player instance
+                            mPlayer = new MediaPlayer();
+                            mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
-                                mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
-                                //mInterstitialAd.loadAd(new AdRequest.Builder().build());
-                                Log.d("PUBLICITA", "AD LOADED");
+                            mPlayer.setScreenOnWhilePlaying(true);
 
-                                // do pre execute stuff...
-                                skiped = false;
-                                progressDialog.setTitle(categoriaName);
-                                progressDialog.setMessage("Se incarca...");
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.setCancelable(false);
-                                progressDialog.show();
-                                // The audio url to play
-                                audioUrl = selectedLink;
+                            WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                                    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 
-                            }
+                            wifiLock.acquire();
 
-                            protected String doInBackground(String... params) {
-                                // do background stuff...
-                                //Try to play music/audio from url
-                                try{
-                                    // Set the media player audio stream type
-                                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                    //String encodedPath = URLEncoder.encode(audioUrl, "UTF-8");
-                                    // Set the audio data source
-                                    mPlayer.setDataSource(audioUrl.replaceAll(" ","%20"));
-                                    // Prepare the media player
-                                    mPlayer.prepare();
+                            new AsyncTask<String, Integer, String>() {
+                                protected void onPreExecute() {
 
-                                }catch (IOException e){
-                                    // Catch the exception
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (IllegalArgumentException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (SecurityException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (IllegalStateException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
+                                    mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
+                                    //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                    Log.d("PUBLICITA", "AD LOADED");
+
+                                    // do pre execute stuff...
+                                    skiped = false;
+                                    progressDialog.setTitle(categoriaName);
+                                    progressDialog.setMessage("Se incarca...");
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.show();
+                                    // The audio url to play
+                                    audioUrl = selectedLink;
+
                                 }
-                                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                    @Override
-                                    public void onCompletion(MediaPlayer mediaPlayer) {
-                                        //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.play);
-                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
-                                        played = false;
+                                protected String doInBackground(String... params) {
+                                    // do background stuff...
+                                    //Try to play music/audio from url
+                                    try {
+                                        // Set the media player audio stream type
+                                        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                        //String encodedPath = URLEncoder.encode(audioUrl, "UTF-8");
+                                        // Set the audio data source
+                                        mPlayer.setDataSource(audioUrl.replaceAll(" ", "%20"));
+                                        // Prepare the media player
+                                        mPlayer.prepare();
 
-                                        if (mInterstitialAd.isLoaded()) {
-                                            mInterstitialAd.show();
-                                            Log.d("PUBLICITA", "AD STARTED");
-                                        } else {
-                                            Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
-                                        }
-
-                                        mButtonDx.performClick();
+                                    } catch (IOException e) {
+                                        // Catch the exception
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (SecurityException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (IllegalStateException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
                                     }
-                                });
-                                return "";
-                            }
-                            protected void onPostExecute(String result) {
-                                // do post execute stuff...
-                                if (progressDialog != null && progressDialog.isShowing()){
-                                    progressDialog.dismiss();
+                                    mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                        @Override
+                                        public void onCompletion(MediaPlayer mediaPlayer) {
+                                            //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                            mButtonPlay.setImageResource(R.drawable.play);
+                                            mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
+                                            played = false;
+
+                                            if (mInterstitialAd.isLoaded()) {
+                                                mInterstitialAd.show();
+                                                Log.d("PUBLICITA", "AD STARTED");
+                                            } else {
+                                                Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                            }
+
+                                            mButtonDx.performClick();
+                                        }
+                                    });
+                                    return "";
                                 }
-                                barraAudio.setVisibility(View.VISIBLE);
+
+                                protected void onPostExecute(String result) {
+                                    // do post execute stuff...
+                                    if (progressDialog != null && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                    barraAudio.setVisibility(View.VISIBLE);
+                                    mPlayer.start();
+
+                                    NotificationGenerator controllers = new NotificationGenerator();
+
+                                    controllers.songName = "Now You're Gone";
+                                    controllers.albumName = "Now Youre Gone - The Album";
+
+                                    controllers.customBigNotification(getApplicationContext());
+
+                                    // Get the current audio stats
+                                    getAudioStats();
+                                    // Initialize the seek bar
+                                    initializeSeekBar();
+                                    mButtonPlay.setImageResource(R.drawable.pause);
+                                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                                    ultimoLink = selectedLink;
+                                    lblRiproduzzione.setText(selectedName);
+                                    played = true;
+                                    skiped = false;
+
+                                }
+                            }.execute();
+
+                        } else {
+
+                            if (mPlayer == null) {
+                                ultimoLink = "";
+                                mButtonPlay.performClick();
+                            } else {
                                 mPlayer.start();
-                                // Get the current audio stats
-                                getAudioStats();
-                                // Initialize the seek bar
-                                initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.pause);
-                                //mButtonPlay.setImageResource(R.drawable.playdefault);
-                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                                ultimoLink = selectedLink;
-                                lblRiproduzzione.setText(selectedName);
-                                played = true;
-                                skiped = false;
-
+                                barraAudio.setVisibility(View.VISIBLE);
                             }
-                        }.execute();
 
-                    }else
-                    {
-
-                        if (mPlayer == null){
-                            ultimoLink ="";
-                            mButtonPlay.performClick();
-                        }else
-                        {
-                            mPlayer.start();
-                            barraAudio.setVisibility(View.VISIBLE);
                         }
 
+                        mButtonPlay.setImageResource(R.drawable.pause);
+                        //mButtonPlay.setImageResource(R.drawable.playdefault);
+                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                        ultimoLink = selectedLink;
+                        played = true;
+                        skiped = false;
+
+                    } else {
+                        mPlayer.pause();
+                        mButtonPlay.setImageResource(R.drawable.play);
+                        //mButtonPlay.setImageResource(R.drawable.playdefault);
+                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
+                        played = false;
+                        skiped = false;
                     }
 
-                    mButtonPlay.setImageResource(R.drawable.pause);
-                    //mButtonPlay.setImageResource(R.drawable.playdefault);
-                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                    ultimoLink = selectedLink;
-                    played = true;
-                    skiped = false;
-
-                }else
-                {
-                    mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.play);
-                    //mButtonPlay.setImageResource(R.drawable.playdefault);
-                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
-
-                    played = false;
-                    skiped = false;
-                }
 
             }
         });
+
 
         if (connected){
             caricamentoListaAudio();
@@ -827,7 +845,11 @@ public class playlist_audio extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroymPlayer();
+    }
 
     @Override
     protected void onResume()
@@ -1246,7 +1268,7 @@ public class playlist_audio extends AppCompatActivity {
                     groceryList.add(categorie);
                 }else if (i == 3)
                 {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.bible);
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
                     groceryList.add(categorie);
                 }else
                 {
@@ -1357,4 +1379,7 @@ public class playlist_audio extends AppCompatActivity {
 
         }
     }
+
+
+
 }

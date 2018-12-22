@@ -7,9 +7,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -399,6 +401,14 @@ public class radio extends AppCompatActivity {
 
                         // Initialize a new media player instance
                         mPlayer = new MediaPlayer();
+                        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+                        mPlayer.setScreenOnWhilePlaying(true);
+
+                        WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+
+                        wifiLock.acquire();
 
                         new AsyncTask<String, Integer, String>() {
                             protected void onPreExecute() {
@@ -532,6 +542,11 @@ public class radio extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroymPlayer();
+    }
 
     @Override
     public void onBackPressed() {
@@ -658,7 +673,7 @@ public class radio extends AppCompatActivity {
             }
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row_radio, R.id.textView, data);
 
             listView.setAdapter(adapter);
 

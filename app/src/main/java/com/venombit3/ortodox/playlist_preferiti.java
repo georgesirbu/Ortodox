@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -530,6 +532,14 @@ public class playlist_preferiti extends AppCompatActivity {
 
                         // Initialize a new media player instance
                         mPlayer = new MediaPlayer();
+                        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+                        mPlayer.setScreenOnWhilePlaying(true);
+
+                        WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+
+                        wifiLock.acquire();
 
                         new AsyncTask<String, Integer, String>() {
                             protected void onPreExecute() {
@@ -666,6 +676,19 @@ public class playlist_preferiti extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroymPlayer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        destroymPlayer();
+        startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
+        finish();
+    }
+
     protected void initializeSeekBar(){
         barraAudio.setMax(mPlayer.getDuration()/1000);
 
@@ -754,7 +777,9 @@ public class playlist_preferiti extends AppCompatActivity {
             }
 
             //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row, R.id.textView, data);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row_preferiti, R.id.textView, data);
+
+
 
             listView.setAdapter(adapter);
 

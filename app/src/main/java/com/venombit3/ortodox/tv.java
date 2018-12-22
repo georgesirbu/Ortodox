@@ -80,9 +80,8 @@ public class tv extends AppCompatActivity {
         htmlWebView.setWebViewClient(new CustomWebViewClient());
         WebSettings webSetting = htmlWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);
-        webSetting.setDisplayZoomControls(true);
-        webSetting.setAppCacheEnabled(true);
-        webSetting.setSaveFormData(true);
+        webSetting.setAppCacheEnabled(false);
+        webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
         htmlWebView.loadUrl("http://venombit.com/Ortodox/tv/index.html");
     }
 
@@ -94,6 +93,12 @@ public class tv extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        startActivity(new Intent(tv.this, playlist_audio.class));
+        finish();
+    }
 
 
 }
