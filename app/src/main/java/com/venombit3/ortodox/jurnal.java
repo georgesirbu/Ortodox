@@ -11,9 +11,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class jurnal extends AppCompatActivity {
 
     private TextView mTextMessage;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,6 +72,8 @@ public class jurnal extends AppCompatActivity {
 
         setTitle("Jurnal");
 
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         htmlWebView.setWebViewClient(new CustomWebViewClient());
         WebSettings webSetting = htmlWebView.getSettings();

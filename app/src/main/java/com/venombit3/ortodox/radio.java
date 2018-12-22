@@ -31,6 +31,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,6 +43,8 @@ import java.net.URL;
 public class radio extends AppCompatActivity {
 
     private TextView mTextMessage;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -149,6 +152,8 @@ public class radio extends AppCompatActivity {
         appUnitId = getString(R.string.adMobUnitID);
         appBannerUnitId = getString(R.string.adMobBannerUnitID);
 
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //fullscreen ads
         Log.d("PUBLICITA", "ON CREATE:");

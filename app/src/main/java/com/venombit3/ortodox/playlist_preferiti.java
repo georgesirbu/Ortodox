@@ -33,6 +33,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,6 +51,8 @@ public class playlist_preferiti extends AppCompatActivity {
     public String linkListaMedia = webhosting + webListe +"acatiste.lst";
 
     public String listaCategorie="";
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -173,16 +176,14 @@ public class playlist_preferiti extends AppCompatActivity {
         setTitle("Favorite");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         navigation.getMenu().findItem(R.id.navFavorite).setChecked(true);
 
         appId = getString(R.string.adMobID);
         appUnitId = getString(R.string.adMobUnitID);
         appBannerUnitId = getString(R.string.adMobBannerUnitID);
-
-
-
-
 
         //fullscreen ads
         Log.d("PUBLICITA", "ON CREATE:");
@@ -515,6 +516,11 @@ public class playlist_preferiti extends AppCompatActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
+
+                Bundle params = new Bundle();
+                params.putString("Audio_Name", selectedName);
+                params.putString("Audio_link", linkToShare);
+                mFirebaseAnalytics.logEvent("share_audio", params);
 
             }
 

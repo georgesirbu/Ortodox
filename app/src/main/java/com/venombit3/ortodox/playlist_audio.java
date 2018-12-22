@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -46,6 +47,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.ads.mediationtestsuite.MediationTestSuite;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -53,6 +55,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -211,6 +214,13 @@ public class playlist_audio extends AppCompatActivity {
 
     Spinner spinner2;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+    public String versionCodeLink = webhosting + "/Ortodox/app/versionCode.code";
+
+    public int versionCodeHttp;
+    public int versionCodeApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,9 +229,6 @@ public class playlist_audio extends AppCompatActivity {
         setContentView(R.layout.activity_audio);
 
         //MEDIA PLAYER CONTROLLER
-
-
-
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -300,6 +307,9 @@ public class playlist_audio extends AppCompatActivity {
             finish();
         }
 
+
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //CLOUD NOTIFICATION FIREBASE
 
@@ -455,7 +465,7 @@ public class playlist_audio extends AppCompatActivity {
                 final ListView lw = listView;
 
                 if(scrollState == 0)
-                    Log.i("DIR:", "scrolling stopped...");
+                    //Log.i("DIR:", "scrolling stopped...");
 
                 //int mLastFirstVisibleItem = lw.getLastVisiblePosition();
                 if (view.getId() == lw.getId()) {
@@ -497,6 +507,13 @@ public class playlist_audio extends AppCompatActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
+
+                //Crashlytics.log(Log.DEBUG, "ATTIVITA:", "SHARE -> " + shareBody);
+
+                Bundle params = new Bundle();
+                params.putString("Audio_Name", selectedName);
+                params.putString("Audio_link", linkToShare);
+                mFirebaseAnalytics.logEvent("share_audio", params);
 
             }
         });
@@ -842,6 +859,16 @@ public class playlist_audio extends AppCompatActivity {
 
         idAudioRilevato = -1;
 
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            versionCodeApp = pInfo.versionCode;
+
+            getCodeVersionHttp();
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1004,6 +1031,83 @@ public class playlist_audio extends AppCompatActivity {
         //mDue.setText("" + due + " seconds");
 
     }
+
+    public void getCodeVersionHttp()
+    {
+
+        ReadCodeVersion tsk = new ReadCodeVersion();
+        tsk.execute(versionCodeLink);
+
+    }
+
+    private class ReadCodeVersion extends AsyncTask<String,Integer,String> {
+
+        String versionString;
+
+        protected String doInBackground(String... params) {
+            URL url;
+            try {
+                //create url object to point to the file location on internet
+                url = new URL(params[0]);
+                //make a request to server
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                //get InputStream instance
+                InputStream is = con.getInputStream();
+                //create BufferedReader object
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                //read content of the file line by line
+                while ((line = br.readLine()) != null) {
+                    versionString += line;
+                }
+
+                br.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //close dialog if error occurs
+            }
+
+            try {
+                versionCodeHttp = Integer.parseInt(versionString.replace("null",""));
+            } catch(NumberFormatException nfe) {
+                versionCodeHttp = versionCodeApp;
+            }
+
+            fineHTTP = 1;
+            return "Ok";
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            fineHTTP = 1;
+
+            if (versionCodeApp < versionCodeHttp) {
+
+                Toast.makeText(playlist_audio.this, "Avem o nouă versiune disponibilă!", Toast.LENGTH_LONG).show();
+
+                Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.venombit3.ortodox"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+
+            }
+
+            fineHTTP = 0;
+
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
+            fineHTTP = 1;
+        }
+    }
+
+
+
 
     public void caricamentoListaAudio()
     {
@@ -1260,19 +1364,19 @@ public class playlist_audio extends AppCompatActivity {
                     groceryList.add(categorie);
                 }else if (i == 1)
                 {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
                     groceryList.add(categorie);
                 }else if (i == 2)
                 {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
                     groceryList.add(categorie);
                 }else if (i == 3)
                 {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
                     groceryList.add(categorie);
                 }else
                 {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.acatiste);
+                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
                     groceryList.add(categorie);
                 }
 

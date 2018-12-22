@@ -16,9 +16,12 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class tv extends AppCompatActivity {
 
     private TextView mTextMessage;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -75,6 +78,9 @@ public class tv extends AppCompatActivity {
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
         setTitle("Trinitas TV");
+
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         WebView htmlWebView = (WebView)findViewById(R.id.webview);
         htmlWebView.setWebViewClient(new CustomWebViewClient());

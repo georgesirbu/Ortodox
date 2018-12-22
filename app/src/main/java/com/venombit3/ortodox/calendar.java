@@ -46,6 +46,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -65,6 +66,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+
 public class calendar extends AppCompatActivity {
 
     public String webhosting = "http://venombit.com";
@@ -74,6 +76,8 @@ public class calendar extends AppCompatActivity {
 
     public String listaCalendar="";
     public String linkCalendar="";
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -207,6 +211,8 @@ public class calendar extends AppCompatActivity {
             finish();
         }
 
+        //FIREBASE INSTANCE
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //CLOUD NOTIFICATION FIREBASE
 
@@ -468,6 +474,9 @@ public class calendar extends AppCompatActivity {
                     htmlWebView.loadUrl(linkCalendar);
 
                     //PUBLICITA
+                    mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
+                    //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    Log.d("PUBLICITA", "AD LOADED");
 
                     if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
