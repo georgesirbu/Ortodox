@@ -56,6 +56,11 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -227,6 +232,9 @@ public class playlist_audio extends AppCompatActivity {
     public int versionCodeHttp;
     public int versionCodeApp;
 
+    public String tokenCloudMessaging;
+    public String idIstanzaInAppMessaging;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -340,6 +348,7 @@ public class playlist_audio extends AppCompatActivity {
         //FIREBASE INSTANCE
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+
         //CLOUD NOTIFICATION FIREBASE
 
         // Get token
@@ -354,12 +363,40 @@ public class playlist_audio extends AppCompatActivity {
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
 
+                        tokenCloudMessaging = token;
+
                         // Log and toast
                         String msg = token;
                         Log.d("NOTIFICATION", msg);
                         //Toast.makeText(playlist_audio.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        //FIREBASE DATABASE
+       // DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("devices");
+        // Creating new user node, which returns the unique key value
+        // new user node would be /users/$userid/
+        //String userId = mDatabase.push().getKey();
+        // creating user object
+       // deviceInfo deviceInfo = new deviceInfo("token", "id");
+        // pushing user to 'users' node using the userId
+       // mDatabase.child(userId).setValue(deviceInfo);
+
+       // mDatabase.child(userId).addValueEventListener(new ValueEventListener() {
+        //    @Override
+        //    public void onDataChange(DataSnapshot dataSnapshot) {
+
+//                deviceInfo deviceInfo = dataSnapshot.getValue(deviceInfo.class);
+
+        //                Log.d("DATABASE: ", "TOKEN KEY: " + deviceInfo.tokenCloudMessaging + ", ID INSTANZA: " + deviceInfo.idIstanzaInAppMessaging);
+ //           }
+
+  //          @Override
+  //          public void onCancelled(DatabaseError error) {
+                // Failed to read value
+  //              Log.w("DATABASE:", "Failed to read value.", error.toException());
+   //         }
+  //      });
 
 
         setTitle("Audio");
@@ -376,8 +413,6 @@ public class playlist_audio extends AppCompatActivity {
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(playlist_audio.this, LinearLayoutManager.HORIZONTAL, false);
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
-
-
 
         linearLayout = findViewById(R.id.linearLayout);
 
@@ -839,12 +874,10 @@ public class playlist_audio extends AppCompatActivity {
                                     linearLayout3.setVisibility(View.VISIBLE);
                                     mPlayer.start();
 
-                                    NotificationGenerator controllers = new NotificationGenerator();
-
-                                    controllers.songName = "Now You're Gone";
-                                    controllers.albumName = "Now Youre Gone - The Album";
-
-                                    controllers.customBigNotification(getApplicationContext());
+                                    //NotificationGenerator controllers = new NotificationGenerator();
+                                    //controllers.songName = "Now You're Gone";
+                                    //controllers.albumName = "Now Youre Gone - The Album";
+                                    //controllers.customBigNotification(getApplicationContext());
 
                                     // Get the current audio stats
                                     getAudioStats();
