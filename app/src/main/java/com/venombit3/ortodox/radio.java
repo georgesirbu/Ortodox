@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -136,6 +137,7 @@ public class radio extends AppCompatActivity {
     private String appBannerUnitId;
     private AdView mAdView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,9 +205,13 @@ public class radio extends AppCompatActivity {
         //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
         mInterstitialAd.setAdListener(new AdListener() {
+
+            boolean riprendiAudio = false;
+
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+
             }
 
             @Override
@@ -216,6 +222,17 @@ public class radio extends AppCompatActivity {
             @Override
             public void onAdOpened() {
                 // Code to be executed when the ad is displayed.
+                if (mPlayer.isPlaying())
+                {
+                    mPlayer.pause();
+                    publicitateSound publicitateSound = new publicitateSound();
+                    publicitateSound.play(radio.this, R.raw.publicitate);
+                    riprendiAudio = true;
+                }else
+                {
+                    riprendiAudio = false;
+                }
+
             }
 
             @Override
@@ -226,6 +243,13 @@ public class radio extends AppCompatActivity {
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
+                if (mPlayer != null)
+                {
+                    if (riprendiAudio){
+                        mPlayer.start();
+                    }
+                }
+
             }
         });
 
@@ -399,6 +423,8 @@ public class radio extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                if (connected){
+
                 if(played == false ) {
 
                     if ((ultimoLink != selectedLink) || (skiped == true))
@@ -537,6 +563,11 @@ public class radio extends AppCompatActivity {
                     played = false;
                     skiped = false;
                 }
+
+            }else
+            {
+                Toast.makeText(radio.this, "Aplicatia are nevoie de internet!", Toast.LENGTH_LONG).show();
+            }
 
             }
         });

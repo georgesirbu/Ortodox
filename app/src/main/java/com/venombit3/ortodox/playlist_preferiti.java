@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -164,6 +166,9 @@ public class playlist_preferiti extends AppCompatActivity {
     private String appBannerUnitId;
     private AdView mAdView;
 
+    boolean connected = false;
+
+    public LinearLayout linearLayout3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +180,18 @@ public class playlist_preferiti extends AppCompatActivity {
 
         setTitle("Favorite");
         //getActionBar().setIcon(R.drawable.preferitimenu);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+            startActivity(new Intent(playlist_preferiti.this, networkState.class));
+            finish();
+        }
 
         //FIREBASE INSTANCE
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -234,9 +251,15 @@ public class playlist_preferiti extends AppCompatActivity {
         //mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("23441BE60D3215786403931AB7F74983").build());
 
         mInterstitialAd.setAdListener(new AdListener() {
+
+            boolean riprendiAudio = false;
+
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+
+
+
             }
 
             @Override
@@ -247,6 +270,17 @@ public class playlist_preferiti extends AppCompatActivity {
             @Override
             public void onAdOpened() {
                 // Code to be executed when the ad is displayed.
+                if (mPlayer.isPlaying())
+                {
+                    mPlayer.pause();
+                    publicitateSound publicitateSound = new publicitateSound();
+                    publicitateSound.play(playlist_preferiti.this, R.raw.publicitate);
+                    riprendiAudio = true;
+                }else
+                {
+                    riprendiAudio = false;
+                }
+
             }
 
             @Override
@@ -257,9 +291,15 @@ public class playlist_preferiti extends AppCompatActivity {
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
+                if (mPlayer != null)
+                {
+                    if (riprendiAudio){
+                        mPlayer.start();
+                    }
+                }
+
             }
         });
-
 
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -312,7 +352,7 @@ public class playlist_preferiti extends AppCompatActivity {
 
         listView = findViewById(R.id.listview);
 
-        barraAudio.setVisibility(View.INVISIBLE);
+        barraAudio.setVisibility(View.GONE);
 
         caricamentoListaAudio();
 
@@ -531,150 +571,153 @@ public class playlist_preferiti extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(played == false ) {
+                if (connected) {
 
-                    if ((ultimoLink != selectedLink) || (skiped == true))
-                    {
+                    if (played == false) {
 
-                        // Initialize a new media player instance
-                        mPlayer = new MediaPlayer();
-                        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                        if ((ultimoLink != selectedLink) || (skiped == true)) {
 
-                        mPlayer.setScreenOnWhilePlaying(true);
+                            // Initialize a new media player instance
+                            mPlayer = new MediaPlayer();
+                            mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
-                        WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+                            mPlayer.setScreenOnWhilePlaying(true);
 
-                        wifiLock.acquire();
+                            WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                                    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 
-                        new AsyncTask<String, Integer, String>() {
-                            protected void onPreExecute() {
-                                // do pre execute stuff...
+                            wifiLock.acquire();
 
-                                mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
-                                //mInterstitialAd.loadAd(new AdRequest.Builder().build());
-                                Log.d("PUBLICITA", "AD LOADED");
+                            new AsyncTask<String, Integer, String>() {
+                                protected void onPreExecute() {
+                                    // do pre execute stuff...
 
-                                skiped = false;
-                                progressDialog.setTitle(categoriaName);
-                                progressDialog.setMessage("Se incarca...");
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.setCancelable(false);
-                                progressDialog.show();
-                                // The audio url to play
-                                audioUrl = selectedLink;
-                                // Set the media player audio stream type
-                                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                            }
+                                    mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getString(R.string.adMobTestDevice)).build());
+                                    //mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                    Log.d("PUBLICITA", "AD LOADED");
 
-                            protected String doInBackground(String... params) {
-                                // do background stuff...
-                                //Try to play music/audio from url
-                                try{
-                                    // Set the audio data source
-                                    mPlayer.setDataSource(audioUrl.replaceAll(" ","%20"));
-                                    //mPlayer.setDataSource(audioUrl);
-                                    // Prepare the media player
-                                    mPlayer.prepare();
-
-                                }catch (IOException e){
-                                    // Catch the exception
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (IllegalArgumentException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (SecurityException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
-                                }catch (IllegalStateException e){
-                                    e.printStackTrace();
-                                    //loadingDialog.dismiss();
+                                    skiped = false;
+                                    progressDialog.setTitle(categoriaName);
+                                    progressDialog.setMessage("Se incarca...");
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.show();
+                                    // The audio url to play
+                                    audioUrl = selectedLink;
+                                    // Set the media player audio stream type
+                                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                                 }
-                                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                    @Override
-                                    public void onCompletion(MediaPlayer mediaPlayer) {
-                                        //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.play);
-                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
-                                        played = false;
+                                protected String doInBackground(String... params) {
+                                    // do background stuff...
+                                    //Try to play music/audio from url
+                                    try {
+                                        // Set the audio data source
+                                        mPlayer.setDataSource(audioUrl.replaceAll(" ", "%20"));
+                                        //mPlayer.setDataSource(audioUrl);
+                                        // Prepare the media player
+                                        mPlayer.prepare();
 
-                                        //PUBLICITA
-
-                                        if (mInterstitialAd.isLoaded()) {
-                                            mInterstitialAd.show();
-                                            Log.d("PUBLICITA", "AD STARTED");
-                                        } else {
-                                            Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
-                                        }
-
-
-                                        mButtonDx.performClick();
+                                    } catch (IOException e) {
+                                        // Catch the exception
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (SecurityException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
+                                    } catch (IllegalStateException e) {
+                                        e.printStackTrace();
+                                        //loadingDialog.dismiss();
                                     }
-                                });
-                                return "";
-                            }
-                            protected void onPostExecute(String result) {
-                                // do post execute stuff...
-                                if (progressDialog != null && progressDialog.isShowing()){
-                                    progressDialog.dismiss();
+                                    mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                        @Override
+                                        public void onCompletion(MediaPlayer mediaPlayer) {
+                                            //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                            mButtonPlay.setImageResource(R.drawable.play);
+                                            mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
+                                            played = false;
+
+                                            //PUBLICITA
+
+                                            if (mInterstitialAd.isLoaded()) {
+                                                mInterstitialAd.show();
+                                                Log.d("PUBLICITA", "AD STARTED");
+                                            } else {
+                                                Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                            }
+
+
+                                            mButtonDx.performClick();
+                                        }
+                                    });
+                                    return "";
                                 }
-                                mPlayer.start();
+
+                                protected void onPostExecute(String result) {
+                                    // do post execute stuff...
+                                    if (progressDialog != null && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                    mPlayer.start();
+                                    barraAudio.setVisibility(View.VISIBLE);
+                                    // Get the current audio stats
+                                    getAudioStats();
+                                    // Initialize the seek bar
+                                    initializeSeekBar();
+                                    mButtonPlay.setImageResource(R.drawable.pause);
+                                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                                    ultimoLink = selectedLink;
+                                    lblRiproduzzione.setText(selectedName);
+                                    played = true;
+                                    skiped = false;
+
+                                    //PUBLICITA
+
+                                    if (mInterstitialAd.isLoaded()) {
+                                        mInterstitialAd.show();
+                                        Log.d("PUBLICITA", "AD STARTED");
+                                    } else {
+                                        Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                    }
+
+                                }
+                            }.execute();
+
+                        } else {
+
+                            if (mPlayer == null) {
+                                ultimoLink = "";
+                                mButtonPlay.performClick();
                                 barraAudio.setVisibility(View.VISIBLE);
-                                // Get the current audio stats
-                                getAudioStats();
-                                // Initialize the seek bar
-                                initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.pause);
-                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                                ultimoLink = selectedLink;
-                                lblRiproduzzione.setText(selectedName);
-                                played = true;
-                                skiped = false;
-
-                                //PUBLICITA
-
-                                if (mInterstitialAd.isLoaded()) {
-                                    mInterstitialAd.show();
-                                    Log.d("PUBLICITA", "AD STARTED");
-                                } else {
-                                    Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
-                                }
-
+                            } else {
+                                mPlayer.start();
                             }
-                        }.execute();
 
-                    }else
-                    {
-
-                        if (mPlayer == null){
-                            ultimoLink ="";
-                            mButtonPlay.performClick();
-                            barraAudio.setVisibility(View.VISIBLE  );
-                        }else
-                        {
-                            mPlayer.start();
                         }
 
+                        mButtonPlay.setImageResource(R.drawable.pause);
+                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                        ultimoLink = selectedLink;
+                        played = true;
+                        skiped = false;
+
+                    } else {
+                        mPlayer.pause();
+                        mButtonPlay.setImageResource(R.drawable.play);
+                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+
+                        played = false;
+                        skiped = false;
                     }
-
-                    mButtonPlay.setImageResource(R.drawable.pause);
-                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                    ultimoLink = selectedLink;
-                    played = true;
-                    skiped = false;
-
                 }else
                 {
-                    mPlayer.pause();
-                    mButtonPlay.setImageResource(R.drawable.play);
-                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
-
-                    played = false;
-                    skiped = false;
+                    Toast.makeText(playlist_preferiti.this, "Aplicatia are nevoie de internet!", Toast.LENGTH_LONG).show();
                 }
 
             }

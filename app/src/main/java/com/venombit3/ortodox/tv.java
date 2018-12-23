@@ -1,6 +1,9 @@
 package com.venombit3.ortodox;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -22,6 +25,8 @@ public class tv extends AppCompatActivity {
 
     private TextView mTextMessage;
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    boolean connected = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -78,6 +83,18 @@ public class tv extends AppCompatActivity {
         //navigation.getMenu().findItem(R.id.navigation2).setChecked(true);
         //navigation.getMenu().findItem(R.id.navigation3).setChecked(false);
         setTitle("Trinitas TV");
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else {
+            connected = false;
+            startActivity(new Intent(tv.this, networkState.class));
+            finish();
+        }
 
         //FIREBASE INSTANCE
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);

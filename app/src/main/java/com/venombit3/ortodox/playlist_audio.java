@@ -176,6 +176,7 @@ public class playlist_audio extends AppCompatActivity {
     private SeekBar barraAudio;
     private TextView lblRiproduzzione;
     private LinearLayout linearLayout;
+    public LinearLayout linearLayout3;
 
     public  String[] linksCat;
     public int positonCat;
@@ -268,9 +269,14 @@ public class playlist_audio extends AppCompatActivity {
         //MediationTestSuite.launch(playlist_audio.this, appId);
 
         mInterstitialAd.setAdListener(new AdListener() {
+
+            boolean riprendiAudio = false;
+
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+
+
 
             }
 
@@ -282,6 +288,17 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onAdOpened() {
                 // Code to be executed when the ad is displayed.
+                if (mPlayer.isPlaying())
+                {
+                    mPlayer.pause();
+                    publicitateSound publicitateSound = new publicitateSound();
+                    publicitateSound.play(playlist_audio.this, R.raw.publicitate);
+                    riprendiAudio = true;
+                }else
+                    {
+                        riprendiAudio = false;
+                    }
+
             }
 
             @Override
@@ -292,6 +309,13 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
+                if (mPlayer != null)
+                {
+                    if (riprendiAudio){
+                        mPlayer.start();
+                    }
+                }
+
             }
         });
 
@@ -348,9 +372,7 @@ public class playlist_audio extends AppCompatActivity {
         groceryRecyclerView.setLayoutManager(horizontalLayoutManager);
         groceryRecyclerView.setAdapter(groceryAdapter);
 
-        if (connected) {
-            populategroceryList();
-        }
+
 
         linearLayout = findViewById(R.id.linearLayout);
 
@@ -364,7 +386,9 @@ public class playlist_audio extends AppCompatActivity {
 
         barraAudio = findViewById(R.id.barRiproduzione);
 
-        barraAudio.setVisibility(View.INVISIBLE);
+
+        linearLayout3 = findViewById(R.id.linearLayout3);
+        linearLayout3.setVisibility(View.GONE);
 
         lblRiproduzzione = findViewById(R.id.lblRiproduzzione);
 
@@ -704,6 +728,7 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                if (connected) {
 
                     if (played == false) {
 
@@ -792,7 +817,7 @@ public class playlist_audio extends AppCompatActivity {
                                     if (progressDialog != null && progressDialog.isShowing()) {
                                         progressDialog.dismiss();
                                     }
-                                    barraAudio.setVisibility(View.VISIBLE);
+                                    linearLayout3.setVisibility(View.VISIBLE);
                                     mPlayer.start();
 
                                     NotificationGenerator controllers = new NotificationGenerator();
@@ -825,7 +850,7 @@ public class playlist_audio extends AppCompatActivity {
                                 mButtonPlay.performClick();
                             } else {
                                 mPlayer.start();
-                                barraAudio.setVisibility(View.VISIBLE);
+                                linearLayout3.setVisibility(View.VISIBLE);
                             }
 
                         }
@@ -849,26 +874,36 @@ public class playlist_audio extends AppCompatActivity {
                     }
 
 
+                }else
+                    {
+                        Toast.makeText(playlist_audio.this, "Aplicatia are nevoie de internet!", Toast.LENGTH_LONG).show();
+                    }
             }
         });
 
 
         if (connected){
+
+            populategroceryList();
+
             caricamentoListaAudio();
+
+            try {
+                PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+                String version = pInfo.versionName;
+                versionCodeApp = pInfo.versionCode;
+
+                getCodeVersionHttp();
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
         }
 
         idAudioRilevato = -1;
 
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = pInfo.versionName;
-            versionCodeApp = pInfo.versionCode;
 
-            getCodeVersionHttp();
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
 
     }
 
