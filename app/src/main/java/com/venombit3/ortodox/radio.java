@@ -56,16 +56,19 @@ public class radio extends AppCompatActivity {
                 case R.id.navAudio:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, playlist_audio.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, calendar.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navFavorite:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, playlist_preferiti.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 //case R.id.navRadio:
@@ -76,6 +79,7 @@ public class radio extends AppCompatActivity {
                 case R.id.navTv:
                     destroymPlayer();
                     startActivity(new Intent(radio.this, tv.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 //case R.id.navCalendar:
@@ -588,6 +592,7 @@ public class radio extends AppCompatActivity {
     public void onBackPressed() {
         destroymPlayer();
         startActivity(new Intent(radio.this, playlist_audio.class));
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 

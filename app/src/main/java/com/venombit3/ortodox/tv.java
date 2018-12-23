@@ -36,19 +36,23 @@ public class tv extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navAudio:
                     startActivity(new Intent(tv.this, playlist_audio.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navJurnal:
                    startActivity(new Intent(tv.this, calendar.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navFavorite:
                     startActivity(new Intent(tv.this, playlist_preferiti.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navRadio:
                     //destroymPlayer();
                     startActivity(new Intent(tv.this, radio.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navTv:
@@ -120,6 +124,7 @@ public class tv extends AppCompatActivity {
     public void onBackPressed() {
 
         startActivity(new Intent(tv.this, playlist_audio.class));
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 

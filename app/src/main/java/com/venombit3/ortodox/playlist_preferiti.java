@@ -65,11 +65,14 @@ public class playlist_preferiti extends AppCompatActivity {
                 case R.id.navAudio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
+
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, calendar.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 //case R.id.navFavorite:
@@ -80,11 +83,13 @@ public class playlist_preferiti extends AppCompatActivity {
                 case R.id.navRadio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, radio.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 case R.id.navTv:
                     destroymPlayer();
                     startActivity(new Intent(playlist_preferiti.this, tv.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 //case R.id.navCalendar:
@@ -735,6 +740,7 @@ public class playlist_preferiti extends AppCompatActivity {
     public void onBackPressed() {
         destroymPlayer();
         startActivity(new Intent(playlist_preferiti.this, playlist_audio.class));
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 

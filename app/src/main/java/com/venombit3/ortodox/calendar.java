@@ -88,6 +88,7 @@ public class calendar extends AppCompatActivity {
                 case R.id.navAudio:
                     //destroymPlayer();
                     startActivity(new Intent(calendar.this, playlist_audio.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 //case R.id.navJurnal:
@@ -98,16 +99,19 @@ public class calendar extends AppCompatActivity {
                 case R.id.navFavorite:
                     //destroymPlayer();
                     startActivity(new Intent(calendar.this, playlist_preferiti.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 case R.id.navRadio:
                     //destroymPlayer();
                     startActivity(new Intent(calendar.this, radio.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 case R.id.navTv:
                     //destroymPlayer();
                     startActivity(new Intent(calendar.this, tv.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 //case R.id.navCalendar:
@@ -437,6 +441,7 @@ public class calendar extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         startActivity(new Intent(calendar.this, playlist_audio.class));
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 

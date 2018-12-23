@@ -100,21 +100,26 @@ public class playlist_audio extends AppCompatActivity {
                 case R.id.navJurnal:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, calendar.class));
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                     finish();
                     return true;
                 case R.id.navFavorite:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, playlist_preferiti.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 case R.id.navRadio:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, radio.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                     finish();
                     return true;
                 case R.id.navTv:
                     destroymPlayer();
                     startActivity(new Intent(playlist_audio.this, tv.class));
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     finish();
                     return true;
                 //case R.id.navCalendar:
@@ -435,10 +440,24 @@ public class playlist_audio extends AppCompatActivity {
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+        final SwipeDetector swipeDetector = new SwipeDetector();
+
+        listView.setOnTouchListener(swipeDetector);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+
+                if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
+                    // perform any task
+                    Log.d("SWIPE:", " DA SX A DX");
+
+                }
+                if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+                    // perform any task
+                    Log.d("SWIPE:", " DA DX A SX");
+                }
 
                 try {
                     mPlayer.stop();
