@@ -844,53 +844,64 @@ public class playlist_audio extends AppCompatActivity {
                                         e.printStackTrace();
                                         //loadingDialog.dismiss();
                                     }
+
                                     mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                         @Override
                                         public void onCompletion(MediaPlayer mediaPlayer) {
-                                            //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                            mButtonPlay.setImageResource(R.drawable.play);
-                                            mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
+                                            if (mPlayer != null) {
+                                                //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                                mButtonPlay.setImageResource(R.drawable.play);
+                                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
-                                            played = false;
+                                                played = false;
 
-                                            if (mInterstitialAd.isLoaded()) {
-                                                mInterstitialAd.show();
-                                                Log.d("PUBLICITA", "AD STARTED");
-                                            } else {
-                                                Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                                if (mInterstitialAd != null ) {
+                                                    if (mInterstitialAd.isLoaded()) {
+                                                        mInterstitialAd.show();
+                                                        Log.d("PUBLICITA", "AD STARTED");
+                                                    } else {
+                                                        Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                                    }
+                                                }
+
                                             }
 
-                                            mButtonDx.performClick();
+                                                mButtonDx.performClick();
+
                                         }
                                     });
                                     return "";
                                 }
 
                                 protected void onPostExecute(String result) {
-                                    // do post execute stuff...
-                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
+
+                                    if (mPlayer != null) {
+
+                                        // do post execute stuff...
+                                        if (progressDialog != null && progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                        linearLayout3.setVisibility(View.VISIBLE);
+                                        mPlayer.start();
+
+                                        //NotificationGenerator controllers = new NotificationGenerator();
+                                        //controllers.songName = "Now You're Gone";
+                                        //controllers.albumName = "Now Youre Gone - The Album";
+                                        //controllers.customBigNotification(getApplicationContext());
+
+                                        // Get the current audio stats
+                                        getAudioStats();
+                                        // Initialize the seek bar
+                                        initializeSeekBar();
+                                        mButtonPlay.setImageResource(R.drawable.pause);
+                                        //mButtonPlay.setImageResource(R.drawable.playdefault);
+                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                                        ultimoLink = selectedLink;
+                                        lblRiproduzzione.setText(selectedName);
+                                        played = true;
+                                        skiped = false;
                                     }
-                                    linearLayout3.setVisibility(View.VISIBLE);
-                                    mPlayer.start();
-
-                                    //NotificationGenerator controllers = new NotificationGenerator();
-                                    //controllers.songName = "Now You're Gone";
-                                    //controllers.albumName = "Now Youre Gone - The Album";
-                                    //controllers.customBigNotification(getApplicationContext());
-
-                                    // Get the current audio stats
-                                    getAudioStats();
-                                    // Initialize the seek bar
-                                    initializeSeekBar();
-                                    mButtonPlay.setImageResource(R.drawable.pause);
-                                    //mButtonPlay.setImageResource(R.drawable.playdefault);
-                                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                                    ultimoLink = selectedLink;
-                                    lblRiproduzzione.setText(selectedName);
-                                    played = true;
-                                    skiped = false;
 
                                 }
                             }.execute();
@@ -916,6 +927,7 @@ public class playlist_audio extends AppCompatActivity {
                         skiped = false;
 
                     } else {
+
                         mPlayer.pause();
                         mButtonPlay.setImageResource(R.drawable.play);
                         //mButtonPlay.setImageResource(R.drawable.playdefault);
@@ -923,6 +935,7 @@ public class playlist_audio extends AppCompatActivity {
 
                         played = false;
                         skiped = false;
+
                     }
 
 
@@ -941,6 +954,7 @@ public class playlist_audio extends AppCompatActivity {
             caricamentoListaAudio();
 
             try {
+
                 PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
                 String version = pInfo.versionName;
                 versionCodeApp = pInfo.versionCode;
@@ -1129,7 +1143,7 @@ public class playlist_audio extends AppCompatActivity {
 
     private class ReadCodeVersion extends AsyncTask<String,Integer,String> {
 
-        String versionString;
+        String versionString = "";
 
         protected String doInBackground(String... params) {
             URL url;
@@ -1156,7 +1170,7 @@ public class playlist_audio extends AppCompatActivity {
             }
 
             try {
-                versionCodeHttp = Integer.parseInt(versionString.replace("null",""));
+                versionCodeHttp = Integer.parseInt(versionString);
             } catch(NumberFormatException nfe) {
                 versionCodeHttp = versionCodeApp;
             }
