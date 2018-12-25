@@ -859,8 +859,14 @@ public class playlist_audio extends AppCompatActivity {
 
                                                 played = false;
 
-                                                if (wifiLock != null) {
-                                                    wifiLock.release();
+                                                try {
+                                                    if (wifiLock != null) {
+                                                        if (wifiLock.isHeld()){
+                                                            wifiLock.release();
+                                                        }
+                                                    }
+                                                } catch (Throwable th) {
+                                                    // ignoring this exception, probably wakeLock was already released
                                                 }
 
                                                 if (mInterstitialAd != null ) {
@@ -936,9 +942,16 @@ public class playlist_audio extends AppCompatActivity {
 
                     } else {
 
-                        if (wifiLock != null) {
-                            wifiLock.release();
+                        try {
+                            if (wifiLock != null) {
+                                if (wifiLock.isHeld()){
+                                    wifiLock.release();
+                                }
+                            }
+                        } catch (Throwable th) {
+                            // ignoring this exception, probably wakeLock was already released
                         }
+
                         mPlayer.pause();
                         mButtonPlay.setImageResource(R.drawable.play);
                         //mButtonPlay.setImageResource(R.drawable.playdefault);

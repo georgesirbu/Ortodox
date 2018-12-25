@@ -499,8 +499,14 @@ public class radio extends AppCompatActivity {
                                             //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
                                             mButtonPlay.setImageResource(R.drawable.play);
                                             played = false;
-                                            if (wifiLock != null) {
-                                                wifiLock.release();
+                                            try {
+                                                if (wifiLock != null) {
+                                                    if (wifiLock.isHeld()){
+                                                        wifiLock.release();
+                                                    }
+                                                }
+                                            } catch (Throwable th) {
+                                                // ignoring this exception, probably wakeLock was already released
                                             }
                                         }
                                         //mButtonDx.performClick();
@@ -568,8 +574,14 @@ public class radio extends AppCompatActivity {
 
                 }else
                 {
-                    if (wifiLock != null) {
-                        wifiLock.release();
+                    try {
+                        if (wifiLock != null) {
+                            if (wifiLock.isHeld()){
+                                wifiLock.release();
+                            }
+                        }
+                    } catch (Throwable th) {
+                        // ignoring this exception, probably wakeLock was already released
                     }
                     mPlayer.pause();
                     mButtonPlay.setImageResource(R.drawable.play);

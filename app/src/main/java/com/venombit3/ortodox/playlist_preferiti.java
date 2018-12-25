@@ -651,8 +651,15 @@ public class playlist_preferiti extends AppCompatActivity {
                                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
                                                 played = false;
-                                                if (wifiLock != null) {
-                                                    wifiLock.release();
+
+                                                try {
+                                                    if (wifiLock != null) {
+                                                        if (wifiLock.isHeld()){
+                                                            wifiLock.release();
+                                                        }
+                                                    }
+                                                } catch (Throwable th) {
+                                                    // ignoring this exception, probably wakeLock was already released
                                                 }
 
                                                 //PUBLICITA
@@ -726,8 +733,14 @@ public class playlist_preferiti extends AppCompatActivity {
                         skiped = false;
 
                     } else {
-                        if (wifiLock != null) {
-                            wifiLock.release();
+                        try {
+                            if (wifiLock != null) {
+                                if (wifiLock.isHeld()){
+                                    wifiLock.release();
+                                }
+                            }
+                        } catch (Throwable th) {
+                            // ignoring this exception, probably wakeLock was already released
                         }
                         mPlayer.pause();
                         mButtonPlay.setImageResource(R.drawable.play);
