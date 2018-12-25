@@ -186,6 +186,10 @@ public class playlist_preferiti extends AppCompatActivity {
         setTitle("Favorite");
         //getActionBar().setIcon(R.drawable.preferitimenu);
 
+        final WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+
+
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
@@ -395,6 +399,9 @@ public class playlist_preferiti extends AppCompatActivity {
                 positionLink = position;
                 selectedName = data[+position];
                 skiped = false;
+
+
+
                 mButtonPlay.performClick();
 
             }
@@ -588,9 +595,6 @@ public class playlist_preferiti extends AppCompatActivity {
 
                             mPlayer.setScreenOnWhilePlaying(true);
 
-                            WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                                    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
-
                             wifiLock.acquire();
 
                             new AsyncTask<String, Integer, String>() {
@@ -640,21 +644,26 @@ public class playlist_preferiti extends AppCompatActivity {
                                     mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                         @Override
                                         public void onCompletion(MediaPlayer mediaPlayer) {
-                                            //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                            mButtonPlay.setImageResource(R.drawable.play);
-                                            mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
-                                            played = false;
+                                            if (mPlayer != null) {
+                                                //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                                mButtonPlay.setImageResource(R.drawable.play);
+                                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
-                                            //PUBLICITA
+                                                played = false;
+                                                if (wifiLock != null) {
+                                                    wifiLock.release();
+                                                }
 
-                                            if (mInterstitialAd.isLoaded()) {
-                                                mInterstitialAd.show();
-                                                Log.d("PUBLICITA", "AD STARTED");
-                                            } else {
-                                                Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                                //PUBLICITA
+
+                                                if (mInterstitialAd.isLoaded()) {
+                                                    mInterstitialAd.show();
+                                                    Log.d("PUBLICITA", "AD STARTED");
+                                                } else {
+                                                    Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                                }
                                             }
-
 
                                             mButtonDx.performClick();
                                         }
@@ -663,31 +672,35 @@ public class playlist_preferiti extends AppCompatActivity {
                                 }
 
                                 protected void onPostExecute(String result) {
-                                    // do post execute stuff...
-                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                    mPlayer.start();
-                                    barraAudio.setVisibility(View.VISIBLE);
-                                    // Get the current audio stats
-                                    getAudioStats();
-                                    // Initialize the seek bar
-                                    initializeSeekBar();
-                                    mButtonPlay.setImageResource(R.drawable.pause);
-                                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+                                    if (mPlayer != null) {
+                                        // do post execute stuff...
+                                        if (progressDialog != null && progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                        mPlayer.start();
+                                        barraAudio.setVisibility(View.VISIBLE);
+                                        // Get the current audio stats
+                                        getAudioStats();
+                                        // Initialize the seek bar
+                                        initializeSeekBar();
+                                        mButtonPlay.setImageResource(R.drawable.pause);
+                                        mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
 
-                                    ultimoLink = selectedLink;
-                                    lblRiproduzzione.setText(selectedName);
-                                    played = true;
-                                    skiped = false;
+                                        ultimoLink = selectedLink;
+                                        lblRiproduzzione.setText(selectedName);
+                                        played = true;
+                                        skiped = false;
 
-                                    //PUBLICITA
+                                        //PUBLICITA
 
-                                    if (mInterstitialAd.isLoaded()) {
-                                        mInterstitialAd.show();
-                                        Log.d("PUBLICITA", "AD STARTED");
-                                    } else {
-                                        Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                        if (mInterstitialAd != null ) {
+                                            if (mInterstitialAd.isLoaded()) {
+                                                mInterstitialAd.show();
+                                                Log.d("PUBLICITA", "AD STARTED");
+                                            } else {
+                                                Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                            }
+                                        }
                                     }
 
                                 }
@@ -713,6 +726,9 @@ public class playlist_preferiti extends AppCompatActivity {
                         skiped = false;
 
                     } else {
+                        if (wifiLock != null) {
+                            wifiLock.release();
+                        }
                         mPlayer.pause();
                         mButtonPlay.setImageResource(R.drawable.play);
                         mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
@@ -774,76 +790,80 @@ public class playlist_preferiti extends AppCompatActivity {
 
     public void caricamentoListaAudio()
     {
-        listaMedia= "";
-
-        //if (isNetworkConnected()) {
-
-        String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
-
-        String line="";
-
-
-        //Get the text file
-        File file = new File(dirPath, "favoriteList.lst");
-
-        //Read text from file
-        StringBuilder text = new StringBuilder();
-
         try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            listaMedia= "";
 
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                //text.append('\n');
+            //if (isNetworkConnected()) {
+
+            String dirPath = getFilesDir().getAbsolutePath() + File.separator + "ortodox";
+
+            String line="";
+
+
+            //Get the text file
+            File file = new File(dirPath, "favoriteList.lst");
+
+            //Read text from file
+            StringBuilder text = new StringBuilder();
+
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    //text.append('\n');
+                }
+                br.close();
             }
-            br.close();
-        }
-        catch (IOException e) {
-            //You'll need to add proper error handling here
-        }
+            catch (IOException e) {
+                //You'll need to add proper error handling here
+            }
 
-        listaMedia = text.toString();
+            listaMedia = text.toString();
 
-        if (!listaMedia.isEmpty()) {
+            if (!listaMedia.isEmpty()) {
 
-            parts = listaMedia.split(">");
+                parts = listaMedia.split(">");
 
-            int size = parts.length;
-            data = new String[size / 2];
-            links = new String[size / 2];
+                int size = parts.length;
+                data = new String[size / 2];
+                links = new String[size / 2];
 
-            int n = 0;
-            int l = 0;
+                int n = 0;
+                int l = 0;
 
-            for (int i = 0; i < size; i++) {
+                for (int i = 0; i < size; i++) {
 
-                int p = 2;
+                    int p = 2;
 
-                int resto = i % p;
+                    int resto = i % p;
 
-                if (resto == 0) {
-                    data[n] = parts[i];
-                    n++;
-                } else {
-                    links[l] = parts[i];
-                    l++;
+                    if (resto == 0) {
+                        data[n] = parts[i];
+                        n++;
+                    } else {
+                        links[l] = parts[i];
+                        l++;
+                    }
+
                 }
 
+                //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row_preferiti, R.id.textView, data);
+
+
+                listView.setAdapter(adapter);
+
+
+                adapter.notifyDataSetChanged();
+
+                listView.setAdapter(adapter);
+
             }
-
-            //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_preferiti.this, R.layout.single_row_preferiti, R.id.textView, data);
-
-
-
-            listView.setAdapter(adapter);
-
-
-            adapter.notifyDataSetChanged();
-
-            listView.setAdapter(adapter);
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 

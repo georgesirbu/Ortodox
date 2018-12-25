@@ -242,6 +242,11 @@ public class playlist_audio extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_audio);
 
+
+        //LOCK WIFI
+        final WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+
         //MEDIA PLAYER CONTROLLER
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -527,6 +532,8 @@ public class playlist_audio extends AppCompatActivity {
 
                 checkFavorite();
 
+
+
                 mButtonPlay.performClick();
 
             }
@@ -794,9 +801,6 @@ public class playlist_audio extends AppCompatActivity {
 
                             mPlayer.setScreenOnWhilePlaying(true);
 
-                            WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                                    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
-
                             wifiLock.acquire();
 
                             new AsyncTask<String, Integer, String>() {
@@ -854,6 +858,10 @@ public class playlist_audio extends AppCompatActivity {
                                                 mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.btnDefault));
 
                                                 played = false;
+
+                                                if (wifiLock != null) {
+                                                    wifiLock.release();
+                                                }
 
                                                 if (mInterstitialAd != null ) {
                                                     if (mInterstitialAd.isLoaded()) {
@@ -928,6 +936,9 @@ public class playlist_audio extends AppCompatActivity {
 
                     } else {
 
+                        if (wifiLock != null) {
+                            wifiLock.release();
+                        }
                         mPlayer.pause();
                         mButtonPlay.setImageResource(R.drawable.play);
                         //mButtonPlay.setImageResource(R.drawable.playdefault);
@@ -1265,114 +1276,122 @@ public class playlist_audio extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            fineHTTP = 1;
 
-            if (listaMedia != "") {
+            try {
+                fineHTTP = 1;
+                if (listaMedia != "") {
 
-                parts = listaMedia.split(">");
+                    parts = listaMedia.split(">");
 
-                int size = parts.length;
-                data = new String[size / 2];
-                links = new String[size / 2];
+                    int size = parts.length;
+                    data = new String[size / 2];
+                    links = new String[size / 2];
 
-                int n = 0;
-                int l = 0;
+                    int n = 0;
+                    int l = 0;
 
-                for (int i = 0; i < size; i++) {
+                    for (int i = 0; i < size; i++) {
 
-                    int p = 2;
+                        int p = 2;
 
-                    int resto = i % p;
+                        int resto = i % p;
 
-                    if (resto == 0) {
-                        data[n] = parts[i];
-                        n++;
-                    } else {
-                        links[l] = parts[i];
-                        l++;
+                        if (resto == 0) {
+                            data[n] = parts[i];
+                            n++;
+                        } else {
+                            links[l] = parts[i];
+                            l++;
+                        }
+
                     }
 
                 }
+                //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
 
-            }
-            //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
+                listView.setAdapter(adapter);
 
-            listView.setAdapter(adapter);
-
-            fineHTTP = 0;
+                fineHTTP = 0;
 
 
-            //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
+                //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
-            if (sharedLink!=null)
-            {
-
-                //Toast.makeText(playlist_audio.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
-
-                try {
-                    mPlayer.stop();
-                    if(mHandler!=null){
-                        mHandler.removeCallbacks(mRunnable);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (mPlayer != null) {
-                    mPlayer.reset();
-                    mPlayer.release();
-                    mPlayer = null;
-                }else
+                if (sharedLink!=null)
                 {
 
-                }
+                    //Toast.makeText(playlist_audio.this, "->"+sharedLink+"<-", Toast.LENGTH_LONG).show();
 
-
-                //mButtonPlay.setImageResource(R.drawable.butonplay);
-                played = false;
-
-                for (int i = 0; i < links.length; i++) {
-                    String thisString = links[i];
-
-                    if (thisString.equals(sharedLink)) {
-                        idAudioRilevato = i;
-                        break;
-                    }
-                }
-
-                if (idAudioRilevato > (-1)) {
-
-                    selectedLink = links[+idAudioRilevato];
-                    positionLink = idAudioRilevato;
-                    selectedName = data[+idAudioRilevato];
-                    skiped = false;
-
-                    //mButtonPlay.performClick();
-
-                    mButtonPlay.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mButtonPlay.performClick();
+                    try {
+                        mPlayer.stop();
+                        if(mHandler!=null){
+                            mHandler.removeCallbacks(mRunnable);
                         }
-                    });
-
-                    sharedLink = null;
-
-                } else {
-
-                    try{
-                        positonCat = positonCat + 1;
-                        linkListaMedia = linksCat[positonCat];
-                        caricamentoListaAudio();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        // Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
-                        sharedLink = null;
+                    }
+
+                    if (mPlayer != null) {
+                        mPlayer.reset();
+                        mPlayer.release();
+                        mPlayer = null;
+                    }else
+                    {
 
                     }
+
+
+                    //mButtonPlay.setImageResource(R.drawable.butonplay);
+                    played = false;
+
+                    for (int i = 0; i < links.length; i++) {
+                        String thisString = links[i];
+
+                        if (thisString.equals(sharedLink)) {
+                            idAudioRilevato = i;
+                            break;
+                        }
+                    }
+
+                    if (idAudioRilevato > (-1)) {
+
+                        selectedLink = links[+idAudioRilevato];
+                        positionLink = idAudioRilevato;
+                        selectedName = data[+idAudioRilevato];
+                        skiped = false;
+
+                        //mButtonPlay.performClick();
+
+                        mButtonPlay.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mButtonPlay.performClick();
+                            }
+                        });
+
+                        sharedLink = null;
+
+                    } else {
+
+                        try{
+                            positonCat = positonCat + 1;
+                            linkListaMedia = linksCat[positonCat];
+                            caricamentoListaAudio();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            // Toast.makeText(playlist_audio.this, "->FINE LOOP CATEGORIE<-", Toast.LENGTH_LONG).show();
+                            sharedLink = null;
+
+                        }
+                    }
+
+
                 }
 
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(playlist_audio.this, "Avem o mica problema, redeschideti aplicatia. " , Toast.LENGTH_LONG).show();
 
             }
 
@@ -1423,71 +1442,79 @@ public class playlist_audio extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            fineHTTP2 = 1;
 
-            while(fineHTTP2==0) {
-                //Log.d("LISTA CATEGORIE: ", listaCategorie);
-            }
-
-            String[] categories = listaCategorie.split(">");
-            int size = categories.length;
-
-
-            final String[] dataCat = new String[size/2];
-            linksCat = new String[size/2];
-            int n = 0;
-            int l = 0;
-
-            for (int i=0; i<size; i++) {
-
-                int p = 2;
-
-                int resto = i % p;
-
-                if (resto == 0) {
-                    dataCat[n] = categories[i];
-                    n++;
-                } else {
-                    linksCat[l] = categories[i];
-                    l++;
+            try {
+                fineHTTP2 = 1;
+                while(fineHTTP2==0) {
+                    //Log.d("LISTA CATEGORIE: ", listaCategorie);
                 }
 
-            }
+                String[] categories = listaCategorie.split(">");
+                int size = categories.length;
 
-            int sizeCat = dataCat.length;
 
-            for (int i=0; i<sizeCat; i++)
-            {
+                final String[] dataCat = new String[size/2];
+                linksCat = new String[size/2];
+                int n = 0;
+                int l = 0;
 
-                if (i == 0)
-                {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.colinde);
-                    groceryList.add(categorie);
-                }else if (i == 1)
-                {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                    groceryList.add(categorie);
-                }else if (i == 2)
-                {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                    groceryList.add(categorie);
-                }else if (i == 3)
-                {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                    groceryList.add(categorie);
-                }else
-                {
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                    groceryList.add(categorie);
+                for (int i=0; i<size; i++) {
+
+                    int p = 2;
+
+                    int resto = i % p;
+
+                    if (resto == 0) {
+                        dataCat[n] = categories[i];
+                        n++;
+                    } else {
+                        linksCat[l] = categories[i];
+                        l++;
+                    }
+
                 }
 
+                int sizeCat = dataCat.length;
 
+                for (int i=0; i<sizeCat; i++)
+                {
+
+                    if (i == 0)
+                    {
+                        Grocery categorie = new Grocery(dataCat[i], R.drawable.colinde);
+                        groceryList.add(categorie);
+                    }else if (i == 1)
+                    {
+                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                        groceryList.add(categorie);
+                    }else if (i == 2)
+                    {
+                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                        groceryList.add(categorie);
+                    }else if (i == 3)
+                    {
+                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                        groceryList.add(categorie);
+                    }else
+                    {
+                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                        groceryList.add(categorie);
+                    }
+
+
+
+                }
+
+                groceryAdapter.notifyDataSetChanged();
+
+                fineHTTP2 = 0;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(playlist_audio.this, "Avem o mica problema, redeschideti aplicatia. " , Toast.LENGTH_LONG).show();
 
             }
 
-            groceryAdapter.notifyDataSetChanged();
-
-            fineHTTP2 = 0;
 
         }
 

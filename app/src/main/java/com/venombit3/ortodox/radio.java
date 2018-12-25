@@ -153,6 +153,9 @@ public class radio extends AppCompatActivity {
 
         navigation.getMenu().findItem(R.id.navRadio).setChecked(true);
 
+        final WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+
 
         appId = getString(R.string.adMobID);
         appUnitId = getString(R.string.adMobUnitID);
@@ -328,6 +331,8 @@ public class radio extends AppCompatActivity {
 
                 //checkFavorite();
 
+
+
                 mButtonPlay.performClick();
 
             }
@@ -440,9 +445,6 @@ public class radio extends AppCompatActivity {
 
                         mPlayer.setScreenOnWhilePlaying(true);
 
-                        WifiManager.WifiLock wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
-                                .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
-
                         wifiLock.acquire();
 
                         new AsyncTask<String, Integer, String>() {
@@ -492,45 +494,52 @@ public class radio extends AppCompatActivity {
                                 mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                     @Override
                                     public void onCompletion(MediaPlayer mediaPlayer) {
-                                        //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
-                                        mButtonPlay.setImageResource(R.drawable.play);
-                                        played = false;
 
+                                        if (mPlayer != null) {
+                                            //Toast.makeText(mContext,"End",Toast.LENGTH_SHORT).show();
+                                            mButtonPlay.setImageResource(R.drawable.play);
+                                            played = false;
+                                            if (wifiLock != null) {
+                                                wifiLock.release();
+                                            }
+                                        }
                                         //mButtonDx.performClick();
                                     }
                                 });
                                 return "";
                             }
                             protected void onPostExecute(String result) {
-                                // do post execute stuff...
-                                if (progressDialog != null && progressDialog.isShowing()){
-                                    progressDialog.dismiss();
+                                if (mPlayer != null) {
+                                    // do post execute stuff...
+                                    if (progressDialog != null && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                    //barraAudio.setVisibility(View.VISIBLE);
+                                    mPlayer.start();
+                                    // Get the current audio stats
+                                    getAudioStats();
+                                    // Initialize the seek bar
+                                    //initializeSeekBar();
+                                    mButtonPlay.setImageResource(R.drawable.pause);
+                                    //mButtonPlay.setImageResource(R.drawable.playdefault);
+                                    mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+
+                                    ultimoLink = selectedLink;
+                                    lblRiproduzzione.setText(selectedName);
+                                    played = true;
+                                    skiped = false;
+
+
+                                    //PUBLICITA
+                                    if (mInterstitialAd != null ) {
+                                        if (mInterstitialAd.isLoaded()) {
+                                            mInterstitialAd.show();
+                                            Log.d("PUBLICITA", "AD STARTED");
+                                        } else {
+                                            Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
+                                        }
+                                    }
                                 }
-                                //barraAudio.setVisibility(View.VISIBLE);
-                                mPlayer.start();
-                                // Get the current audio stats
-                                getAudioStats();
-                                // Initialize the seek bar
-                                //initializeSeekBar();
-                                mButtonPlay.setImageResource(R.drawable.pause);
-                                //mButtonPlay.setImageResource(R.drawable.playdefault);
-                                mButtonPlay.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
-
-                                ultimoLink = selectedLink;
-                                lblRiproduzzione.setText(selectedName);
-                                played = true;
-                                skiped = false;
-
-
-                                //PUBLICITA
-
-                                if (mInterstitialAd.isLoaded()) {
-                                    mInterstitialAd.show();
-                                    Log.d("PUBLICITA", "AD STARTED");
-                                } else {
-                                    Log.d("PUBLICITA", "The interstitial wasn't loaded yet.");
-                                }
-
 
                             }
                         }.execute();
@@ -559,6 +568,9 @@ public class radio extends AppCompatActivity {
 
                 }else
                 {
+                    if (wifiLock != null) {
+                        wifiLock.release();
+                    }
                     mPlayer.pause();
                     mButtonPlay.setImageResource(R.drawable.play);
                     //mButtonPlay.setImageResource(R.drawable.playdefault);
@@ -686,41 +698,47 @@ public class radio extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            fineHTTP = 1;
+            try {
+                fineHTTP = 1;
 
-            parts = listaMedia.split(">");
+                parts = listaMedia.split(">");
 
-            int size = parts.length;
-            data = new String[size/2];
-            links = new String[size/2];
+                int size = parts.length;
+                data = new String[size/2];
+                links = new String[size/2];
 
-            int n = 0;
-            int l = 0;
+                int n = 0;
+                int l = 0;
 
-            for (int i=0; i<size; i++) {
+                for (int i=0; i<size; i++) {
 
-                int p = 2;
+                    int p = 2;
 
-                int resto = i % p;
+                    int resto = i % p;
 
-                if (resto == 0) {
-                    data[n] = parts[i];
-                    n++;
-                } else {
-                    links[l] = parts[i];
-                    l++;
+                    if (resto == 0) {
+                        data[n] = parts[i];
+                        n++;
+                    } else {
+                        links[l] = parts[i];
+                        l++;
+                    }
+
                 }
 
+                //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+                ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row_radio, R.id.textView, data);
+
+                listView.setAdapter(adapter);
+
+                fineHTTP = 0;
+
+                //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-            ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row_radio, R.id.textView, data);
-
-            listView.setAdapter(adapter);
-
-            fineHTTP = 0;
-
-            //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
             listaMedia= "";
 
