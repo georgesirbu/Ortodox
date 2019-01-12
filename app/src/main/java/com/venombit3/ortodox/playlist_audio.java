@@ -1241,14 +1241,12 @@ public class playlist_audio extends AppCompatActivity {
         tsk.execute(linkListaMedia);
     }
 
-    public String[] populategroceryList(){
+    public void populategroceryList(){
 
         listaCategorie = "";
 
         ReadCategorieList tsk = new ReadCategorieList();
         tsk.execute(webhosting+webCategorii+"categorie.cat");
-
-        return linksCat;
 
 
     }
@@ -1292,41 +1290,46 @@ public class playlist_audio extends AppCompatActivity {
 
             try {
                 fineHTTP = 1;
-                if (listaMedia != "") {
+                String separatore = ">";
+                if (listaMedia.toLowerCase().contains(separatore.toLowerCase())) {
 
                     parts = listaMedia.split(">");
 
                     int size = parts.length;
-                    data = new String[size / 2];
-                    links = new String[size / 2];
 
-                    int n = 0;
-                    int l = 0;
+                    if (size > 0) {
+                        data = new String[size / 2];
+                        links = new String[size / 2];
 
-                    for (int i = 0; i < size; i++) {
+                        int n = 0;
+                        int l = 0;
 
-                        int p = 2;
+                        for (int i = 0; i < size; i++) {
 
-                        int resto = i % p;
+                            int p = 2;
 
-                        if (resto == 0) {
-                            data[n] = parts[i];
-                            n++;
-                        } else {
-                            links[l] = parts[i];
-                            l++;
+                            int resto = i % p;
+
+                            if (resto == 0) {
+                                data[n] = parts[i];
+                                n++;
+                            } else {
+                                links[l] = parts[i];
+                                l++;
+                            }
+
                         }
 
+
+                        //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
+
+                        listView.setAdapter(adapter);
+
+                        fineHTTP = 0;
+
                     }
-
                 }
-                //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(playlist_audio.this, R.layout.single_row, R.id.textView, data);
-
-                listView.setAdapter(adapter);
-
-                fineHTTP = 0;
-
 
                 //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
 
@@ -1436,7 +1439,6 @@ public class playlist_audio extends AppCompatActivity {
                 //read content of the file line by line
                 while ((line = br.readLine()) != null) {
                     listaCategorie += line;
-
                 }
 
                 br.close();
@@ -1457,70 +1459,79 @@ public class playlist_audio extends AppCompatActivity {
 
 
             try {
-                fineHTTP2 = 1;
+
                 while(fineHTTP2==0) {
                     //Log.d("LISTA CATEGORIE: ", listaCategorie);
                 }
 
-                String[] categories = listaCategorie.split(">");
-                int size = categories.length;
 
 
-                final String[] dataCat = new String[size/2];
-                linksCat = new String[size/2];
-                int n = 0;
-                int l = 0;
+                String separatore = ">";
+                if (listaCategorie.toLowerCase().contains(separatore.toLowerCase())) {
 
-                for (int i=0; i<size; i++) {
 
-                    int p = 2;
+                    String[] categories = listaCategorie.split(">");
+                    int size = categories.length;
 
-                    int resto = i % p;
 
-                    if (resto == 0) {
-                        dataCat[n] = categories[i];
-                        n++;
-                    } else {
-                        linksCat[l] = categories[i];
-                        l++;
+                    if(size>0) {
+
+                        final String[] dataCat = new String[size / 2];
+                        linksCat = new String[size / 2];
+
+
+                        int n = 0;
+                        int l = 0;
+
+                        for (int i = 0; i < size; i++) {
+
+                            int p = 2;
+
+                            int resto = i % p;
+
+                            if (resto == 0) {
+                                dataCat[n] = categories[i];
+                                n++;
+                            } else {
+                                linksCat[l] = categories[i];
+                                l++;
+                            }
+
+                        }
+
+
+
+                    int sizeCat = dataCat.length;
+
+                    for (int i = 0; i < sizeCat; i++) {
+
+                        if (i == 0) {
+                            Grocery categorie = new Grocery(dataCat[i], R.drawable.colinde);
+                            groceryList.add(categorie);
+                        } else if (i == 1) {
+                            Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                            groceryList.add(categorie);
+                        } else if (i == 2) {
+                            Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                            groceryList.add(categorie);
+                        } else if (i == 3) {
+                            Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                            groceryList.add(categorie);
+                        } else {
+                            Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
+                            groceryList.add(categorie);
+                        }
+
+
+                    }
+
+                    groceryAdapter.notifyDataSetChanged();
+
+                    fineHTTP2 = 0;
+
                     }
 
                 }
-
-                int sizeCat = dataCat.length;
-
-                for (int i=0; i<sizeCat; i++)
-                {
-
-                    if (i == 0)
-                    {
-                        Grocery categorie = new Grocery(dataCat[i], R.drawable.colinde);
-                        groceryList.add(categorie);
-                    }else if (i == 1)
-                    {
-                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                        groceryList.add(categorie);
-                    }else if (i == 2)
-                    {
-                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                        groceryList.add(categorie);
-                    }else if (i == 3)
-                    {
-                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                        groceryList.add(categorie);
-                    }else
-                    {
-                        Grocery categorie = new Grocery(dataCat[i], R.drawable.audiocat);
-                        groceryList.add(categorie);
-                    }
-
-
-
-                }
-
-                groceryAdapter.notifyDataSetChanged();
-
-                fineHTTP2 = 0;
 
             } catch (Exception e) {
                 e.printStackTrace();

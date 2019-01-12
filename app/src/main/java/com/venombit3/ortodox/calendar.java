@@ -382,53 +382,68 @@ public class calendar extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            fineHTTP2 = 1;
+          try{
+
 
             while(fineHTTP2==0) {
                 //Log.d("LISTA CATEGORIE: ", listaCategorie);
             }
 
-            String[] categories = listaCalendar.split(">");
-            int size = categories.length;
+              String separatore = ">";
+              if (listaCalendar.toLowerCase().contains(separatore.toLowerCase())) {
 
 
-            final String[] dataCat = new String[size/2];
-            linksCat = new String[size/2];
-            int n = 0;
-            int l = 0;
+                  String[] categories = listaCalendar.split(">");
+                  int size = categories.length;
 
-            for (int i=0; i<size; i++) {
+                  if(size>0) {
 
-                int p = 2;
+                      final String[] dataCat = new String[size / 2];
+                      linksCat = new String[size / 2];
+                      int n = 0;
+                      int l = 0;
 
-                int resto = i % p;
+                      for (int i = 0; i < size; i++) {
 
-                if (resto == 0) {
-                    dataCat[n] = categories[i];
-                    n++;
-                } else {
-                    linksCat[l] = categories[i];
-                    l++;
-                }
+                          int p = 2;
 
-            }
+                          int resto = i % p;
 
-            int sizeCat = dataCat.length;
+                          if (resto == 0) {
+                              dataCat[n] = categories[i];
+                              n++;
+                          } else {
+                              linksCat[l] = categories[i];
+                              l++;
+                          }
 
-            for (int i=0; i<sizeCat; i++)
-            {
+                      }
+
+                      int sizeCat = dataCat.length;
+
+                      for (int i = 0; i < sizeCat; i++) {
 
 
-                    Grocery categorie = new Grocery(dataCat[i], R.drawable.imgcalendar);
-                    groceryList.add(categorie);
+                          Grocery categorie = new Grocery(dataCat[i], R.drawable.imgcalendar);
+                          groceryList.add(categorie);
 
-            }
+                      }
 
-            groceryAdapter.notifyDataSetChanged();
+                      groceryAdapter.notifyDataSetChanged();
 
-            fineHTTP2 = 0;
+                      fineHTTP2 = 0;
+                  }
+              }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(calendar.this, "Avem o mica problema, redeschideti aplicatia. " , Toast.LENGTH_LONG).show();
 
         }
+
+        }
+
+
 
         @Override
         protected void finalize() throws Throwable {

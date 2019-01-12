@@ -691,7 +691,6 @@ public class radio extends AppCompatActivity {
                 //read content of the file line by line
                 while ((line = br.readLine()) != null) {
                     listaMedia += line;
-
                 }
 
                 br.close();
@@ -713,40 +712,46 @@ public class radio extends AppCompatActivity {
             try {
                 fineHTTP = 1;
 
-                parts = listaMedia.split(">");
+                String separatore = ">";
+                if (listaMedia.toLowerCase().contains(separatore.toLowerCase())) {
 
-                int size = parts.length;
-                data = new String[size/2];
-                links = new String[size/2];
+                    parts = listaMedia.split(">");
+                    int size = parts.length;
 
-                int n = 0;
-                int l = 0;
+                    if(size>0) {
 
-                for (int i=0; i<size; i++) {
+                        data = new String[size / 2];
+                        links = new String[size / 2];
 
-                    int p = 2;
+                        int n = 0;
+                        int l = 0;
 
-                    int resto = i % p;
+                        for (int i = 0; i < size; i++) {
 
-                    if (resto == 0) {
-                        data[n] = parts[i];
-                        n++;
-                    } else {
-                        links[l] = parts[i];
-                        l++;
+                            int p = 2;
+
+                            int resto = i % p;
+
+                            if (resto == 0) {
+                                data[n] = parts[i];
+                                n++;
+                            } else {
+                                links[l] = parts[i];
+                                l++;
+                            }
+
+                        }
+
+                        //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(radio.this, R.layout.single_row_radio, R.id.textView, data);
+
+                        listView.setAdapter(adapter);
+
+                        fineHTTP = 0;
+
+                        //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
                     }
-
                 }
-
-                //String[] data=new String[]{"Torino","Roma","Milano","Napoli","Firenze"};
-                ArrayAdapter<String> adapter=new ArrayAdapter<String>(radio.this, R.layout.single_row_radio, R.id.textView, data);
-
-                listView.setAdapter(adapter);
-
-                fineHTTP = 0;
-
-                //Toast.makeText(playlist_audio.this, "Data->" + sharedLink + "<-",Toast.LENGTH_LONG).show();
-
 
             } catch (Exception e) {
                 e.printStackTrace();
