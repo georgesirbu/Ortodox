@@ -1232,8 +1232,6 @@ public class playlist_audio extends AppCompatActivity {
     }
 
 
-
-
     public void caricamentoListaAudio()
     {
         //if (isNetworkConnected()) {
