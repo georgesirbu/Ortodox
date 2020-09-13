@@ -109,7 +109,7 @@ public class tv extends AppCompatActivity {
         webSetting.setJavaScriptEnabled(true);
         webSetting.setAppCacheEnabled(false);
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        htmlWebView.loadUrl("http://venombit.com/Ortodox/tv/index.html");
+        htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/tv/index.html");
     }
 
     private class CustomWebViewClient extends WebViewClient {

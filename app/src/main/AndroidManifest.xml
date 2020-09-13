@@ -20,6 +20,8 @@
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true">
 
+
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/adMobID"/>

@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
@@ -78,7 +79,7 @@ import java.util.List;
 
 public class playlist_audio extends AppCompatActivity {
 
-    public String webhosting = "http://venombit.com";
+    public String webhosting = "https://ortodox.cgesoft.it";
     public String webCategorii = "/Ortodox/categorii/";
     public String webListe = "/Ortodox/liste/";
     public String webMedia = "";
@@ -293,8 +294,6 @@ public class playlist_audio extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-
-
 
             }
 
@@ -588,7 +587,7 @@ public class playlist_audio extends AppCompatActivity {
                 sharingIntent.setType("text/plain");
 
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
-                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                String shareBody = "https://ortodox.cgesoft.it/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));
@@ -1001,6 +1000,11 @@ public class playlist_audio extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         destroymPlayer();
+        salvaUltimaCanzone();
+    }
+
+    private void salvaUltimaCanzone() {
+//da fare
     }
 
     @Override

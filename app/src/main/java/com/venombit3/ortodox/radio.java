@@ -92,7 +92,7 @@ public class radio extends AppCompatActivity {
         }
     };
 
-    public String webhosting = "http://venombit.com";
+    public String webhosting = "https://ortodox.cgesoft.it";
     public String webListe = "/Ortodox/liste/";
 
     public String listaMedia="";

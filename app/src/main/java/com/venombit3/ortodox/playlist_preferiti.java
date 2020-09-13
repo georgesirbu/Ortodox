@@ -45,7 +45,7 @@ import java.io.IOException;
 
 public class playlist_preferiti extends AppCompatActivity {
 
-    public String webhosting = "http://venombit.com";
+    public String webhosting = "https://ortodox.cgesoft.it";
     public String webCategorii = "/Ortodox/categorii/";
     public String webListe = "/Ortodox/liste/";
     public String webMedia = "";
@@ -564,7 +564,7 @@ public class playlist_preferiti extends AppCompatActivity {
                 sharingIntent.setType("text/plain");
 
                 //intent://www.venombit.com/Ortodox#Intent;scheme=http;package=com.georgesirbu.ortodox;S.namestring="+linkToShare+";end;
-                String shareBody = "http://venombit.com/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
+                String shareBody = "https://ortodox.cgesoft.it/Ortodox/index.php?#Intent;scheme=http;package=com.venombit3.ortodox;S.namestring="+linkToShare+";end;";//selectedLink;
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Trimite audio");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Trimite cu .."));

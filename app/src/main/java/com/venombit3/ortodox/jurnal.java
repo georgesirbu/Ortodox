@@ -79,7 +79,7 @@ public class jurnal extends AppCompatActivity {
         WebSettings webSetting = htmlWebView.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDisplayZoomControls(true);
-        htmlWebView.loadUrl("http://venombit.com/Ortodox/jurnal/index.html");
+        htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/jurnal/index.html");
 
 
     }

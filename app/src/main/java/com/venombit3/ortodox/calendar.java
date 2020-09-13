@@ -69,7 +69,7 @@ import java.util.List;
 
 public class calendar extends AppCompatActivity {
 
-    public String webhosting = "http://venombit.com";
+    public String webhosting = "https://ortodox.cgesoft.it";
     public String webCalendar = "/Ortodox/calendar/";
     public String webListe = "/Ortodox/liste/";
 
@@ -270,53 +270,53 @@ public class calendar extends AppCompatActivity {
             if (month+1 == 12)
             {
 
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Decembrie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Decembrie.html");
 
 
             }else if (month+1 == 11)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Noiembrie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Noiembrie.html");
 
             }else if (month+1 == 10)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Octombrie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Octombrie.html");
 
             }
             else if (month+1 == 9)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Septembrie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Septembrie.html");
             }
             else if (month+1 == 8)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/August.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/August.html");
             }
             else if (month+1 == 7)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Iulie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Iulie.html");
             }
             else if (month+1 == 6)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Iunie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Iunie.html");
             }
             else if (month+1 == 5)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Mai.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Mai.html");
             }
             else if (month+1 == 4)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Aprilie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Aprilie.html");
             }
             else if (month+1 == 3)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Martie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Martie.html");
             }
             else if (month+1 == 2)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Februarie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Februarie.html");
             }
             else if (month+1 == 1)
             {
-                htmlWebView.loadUrl("http://venombit.com/Ortodox/calendar/Ianuarie.html");
+                htmlWebView.loadUrl("https://ortodox.cgesoft.it/Ortodox/calendar/Ianuarie.html");
             }
 
 
