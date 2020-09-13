@@ -8,8 +8,8 @@ android {
         applicationId "com.venombit3.ortodox"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 17
-        versionName "1.17"
+        versionCode 18
+        versionName "1.18"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
